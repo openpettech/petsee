@@ -1,0 +1,1051 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions", "fullTextSearch", "tracing"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [uuidOssp(map: "uuid-ossp")]
+}
+
+// ********
+// DICTIONARY
+// ********
+
+model Species {
+  id        String    @id @default(uuid()) @db.Uuid
+  createdAt DateTime  @default(now())
+  createdBy Json
+  updatedAt DateTime  @updatedAt
+  updatedBy Json
+  deletedAt DateTime?
+  deletedBy Json?
+
+  translations    SpeciesTranslation[]
+  breeds          Breed[]
+  eeferenceValues ReferenceValue[]
+  bloodGroups     BloodGroup[]
+  animals         Animal[]
+  services        Service[]
+
+  @@map("species")
+}
+
+model SpeciesTranslation {
+  speciesId String    @db.Uuid
+  name      String
+  locale    String
+  createdAt DateTime  @default(now())
+  createdBy Json
+  updatedAt DateTime  @updatedAt
+  updatedBy Json
+  deletedAt DateTime?
+  deletedBy Json?
+
+  species Species @relation(fields: [speciesId], references: [id])
+
+  @@id([speciesId, locale])
+  @@map("species_translations")
+}
+
+model Breed {
+  id        String    @id @default(uuid()) @db.Uuid
+  speciesId String    @db.Uuid
+  createdAt DateTime  @default(now())
+  createdBy Json
+  updatedAt DateTime  @updatedAt
+  updatedBy Json
+  deletedAt DateTime?
+  deletedBy Json?
+
+  translations      BreedTranslation[]
+  species           Species            @relation(fields: [speciesId], references: [id])
+  animalBreeds      Animal[]           @relation("breed")
+  animalCrossbreeds Animal[]           @relation("crossbreed")
+  services          Service[]
+
+  @@map("breeds")
+}
+
+model BreedTranslation {
+  breedId   String    @db.Uuid
+  name      String
+  locale    String
+  createdAt DateTime  @default(now())
+  createdBy Json
+  updatedAt DateTime  @updatedAt
+  updatedBy Json
+  deletedAt DateTime?
+  deletedBy Json?
+
+  breed Breed @relation(fields: [breedId], references: [id])
+
+  @@id([breedId, locale])
+  @@map("breed_translations")
+}
+
+model ReferenceCategory {
+  id        String    @id @default(uuid()) @db.Uuid
+  createdAt DateTime  @default(now())
+  createdBy Json
+  updatedAt DateTime  @updatedAt
+  updatedBy Json
+  deletedAt DateTime?
+  deletedBy Json?
+
+  translations    ReferenceCategoryTranslation[]
+  referenceValues ReferenceValue[]
+
+  @@map("reference_categories")
+}
+
+model ReferenceCategoryTranslation {
+  referenceCategoryId String    @db.Uuid
+  name                String
+  locale              String
+  createdAt           DateTime  @default(now())
+  createdBy           Json
+  updatedAt           DateTime  @updatedAt
+  updatedBy           Json
+  deletedAt           DateTime?
+  deletedBy           Json?
+
+  referenceCategory ReferenceCategory @relation(fields: [referenceCategoryId], references: [id])
+
+  @@id([referenceCategoryId, locale])
+  @@map("reference_category_translations")
+}
+
+model ReferenceValue {
+  id                  String    @id @default(uuid()) @db.Uuid
+  speciesId           String    @db.Uuid
+  referenceCategoryId String    @db.Uuid
+  unit                String
+  min                 Float?
+  max                 Float?
+  createdAt           DateTime  @default(now())
+  createdBy           Json
+  updatedAt           DateTime  @updatedAt
+  updatedBy           Json
+  deletedAt           DateTime?
+  deletedBy           Json?
+
+  translations      ReferenceValueTranslation[]
+  species           Species                     @relation(fields: [speciesId], references: [id])
+  referenceCategory ReferenceCategory           @relation(fields: [referenceCategoryId], references: [id])
+
+  @@map("reference_values")
+}
+
+model ReferenceValueTranslation {
+  referenceValueId String    @db.Uuid
+  name             String
+  locale           String
+  createdAt        DateTime  @default(now())
+  createdBy        Json
+  updatedAt        DateTime  @updatedAt
+  updatedBy        Json
+  deletedAt        DateTime?
+  deletedBy        Json?
+
+  referenceValue ReferenceValue @relation(fields: [referenceValueId], references: [id])
+
+  @@id([referenceValueId, locale])
+  @@map("reference_value_translations")
+}
+
+model Allergen {
+  id        String    @id @default(uuid()) @db.Uuid
+  createdAt DateTime  @default(now())
+  createdBy Json
+  updatedAt DateTime  @updatedAt
+  updatedBy Json
+  deletedAt DateTime?
+  deletedBy Json?
+
+  translations AllergenTranslation[]
+  animals      Animal[]
+
+  @@map("allergens")
+}
+
+model AllergenTranslation {
+  allergenId String    @db.Uuid
+  name       String
+  locale     String
+  createdAt  DateTime  @default(now())
+  createdBy  Json
+  updatedAt  DateTime  @updatedAt
+  updatedBy  Json
+  deletedAt  DateTime?
+  deletedBy  Json?
+
+  breed Allergen @relation(fields: [allergenId], references: [id])
+
+  @@id([allergenId, locale])
+  @@map("allergen_translations")
+}
+
+model Diagnose {
+  id        String    @id @default(uuid()) @db.Uuid
+  createdAt DateTime  @default(now())
+  createdBy Json
+  updatedAt DateTime  @updatedAt
+  updatedBy Json
+  deletedAt DateTime?
+  deletedBy Json?
+
+  translations DiagnoseTranslation[]
+
+  @@map("diagnoses")
+}
+
+model DiagnoseTranslation {
+  diagnoseId String    @db.Uuid
+  name       String
+  locale     String
+  createdAt  DateTime  @default(now())
+  createdBy  Json
+  updatedAt  DateTime  @updatedAt
+  updatedBy  Json
+  deletedAt  DateTime?
+  deletedBy  Json?
+
+  breed Diagnose @relation(fields: [diagnoseId], references: [id])
+
+  @@id([diagnoseId, locale])
+  @@map("diagnose_translations")
+}
+
+model BloodGroup {
+  id        String    @id @default(uuid()) @db.Uuid
+  speciesId String    @db.Uuid
+  createdAt DateTime  @default(now())
+  createdBy Json
+  updatedAt DateTime  @updatedAt
+  updatedBy Json
+  deletedAt DateTime?
+  deletedBy Json?
+
+  translations BloodGroupTranslation[]
+  species      Species                 @relation(fields: [speciesId], references: [id])
+  animals      Animal[]
+
+  @@map("blood_groups")
+}
+
+model BloodGroupTranslation {
+  bloodGroupId String    @db.Uuid
+  name         String
+  locale       String
+  createdAt    DateTime  @default(now())
+  createdBy    Json
+  updatedAt    DateTime  @updatedAt
+  updatedBy    Json
+  deletedAt    DateTime?
+  deletedBy    Json?
+
+  bloodGroup BloodGroup @relation(fields: [bloodGroupId], references: [id])
+
+  @@id([bloodGroupId, locale])
+  @@map("blood_groups_translations")
+}
+
+// ********
+// PROJECT
+// ********
+
+model Project {
+  id        String    @id @default(uuid()) @db.Uuid
+  name      String
+  createdAt DateTime  @default(now())
+  createdBy Json
+  updatedAt DateTime  @updatedAt
+  updatedBy Json
+  deletedAt DateTime?
+  deletedBy Json?
+
+  customers            Customer[]
+  contacts             Contact[]
+  animals              Animal[]
+  animalRelationships  AnimalRelationship[]
+  customFields         CustomField[]
+  customFieldOptions   CustomFieldOption[]
+  customFieldValues    CustomFieldValue[]
+  webhooks             Webhook[]
+  webhookLogs          WebhookLog[]
+  apiKeys              ApiKey[]
+  notes                Note[]
+  groups               Group[]
+  groupAssociations    GroupAssociation[]
+  merchants            Merchant[]
+  merchantAssociations MerchantAssociation[]
+  facilities           Facility[]
+  people               Person[]
+  files                File[]
+  tags                 Tag[]
+  brands               Brand[]
+  products             Product[]
+  suppliers            Supplier[]
+  warehouses           Warehouse[]
+  stocks               Stock[]
+  stockLedgers         StockLedger[]
+  services             Service[]
+  serviceOverrides     ServiceOverride[]
+
+  @@map("projects")
+}
+
+model Webhook {
+  id          String   @id @default(uuid()) @db.Uuid
+  projectId   String   @db.Uuid
+  label       String?
+  description String?
+  events      String[] @default([])
+  url         String
+
+  createdAt DateTime  @default(now())
+  createdBy Json
+  updatedAt DateTime  @updatedAt
+  updatedBy Json
+  deletedAt DateTime?
+  deletedBy Json?
+
+  project Project      @relation(fields: [projectId], references: [id])
+  logs    WebhookLog[]
+
+  @@map("webhooks")
+}
+
+enum WebhookRequestStatus {
+  SUCCEEDED
+  ERRORED
+}
+
+model WebhookLog {
+  id        String               @id @default(uuid()) @db.Uuid
+  projectId String               @db.Uuid
+  webhookId String               @db.Uuid
+  request   Json
+  response  Json
+  status    WebhookRequestStatus
+
+  createdAt DateTime  @default(now())
+  createdBy Json
+  updatedAt DateTime  @updatedAt
+  updatedBy Json
+  deletedAt DateTime?
+  deletedBy Json?
+
+  webhook Webhook @relation(fields: [webhookId], references: [id])
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@map("webhook_logs")
+}
+
+model ApiKey {
+  id          String    @id @default(uuid()) @db.Uuid
+  projectId   String    @db.Uuid
+  secretKey   String
+  last4       String
+  label       String?
+  description String?
+  createdAt   DateTime  @default(now())
+  createdBy   Json
+  updatedAt   DateTime  @updatedAt
+  updatedBy   Json
+  deletedAt   DateTime?
+  deletedBy   Json?
+
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@map("api_keys")
+}
+
+// ********
+// CUSTOMER
+// ********
+
+model Customer {
+  id                     String    @id @default(uuid()) @db.Uuid
+  projectId              String    @db.Uuid
+  name                   String?
+  email                  String?
+  alternativeEmail       String?
+  phoneNumber            String?
+  alternativePhoneNumber String?
+  createdAt              DateTime  @default(now())
+  createdBy              Json
+  updatedAt              DateTime  @updatedAt
+  updatedBy              Json
+  deletedAt              DateTime?
+  deletedBy              Json?
+  metadata               Json?
+
+  project       Project              @relation(fields: [projectId], references: [id])
+  contacts      Contact[]
+  tags          Tag[]
+  relationships AnimalRelationship[]
+
+  @@map("customers")
+}
+
+enum ContactType {
+  PHONE_NUMBER
+  EMAIL
+}
+
+model Contact {
+  id                     String    @id @default(uuid()) @db.Uuid
+  projectId              String    @db.Uuid
+  customerId             String    @db.Uuid
+  name                   String
+  email                  String?
+  alternativeEmail       String?
+  phoneNumber            String?
+  alternativePhoneNumber String?
+  createdAt              DateTime  @default(now())
+  createdBy              Json
+  updatedAt              DateTime  @updatedAt
+  updatedBy              Json
+  deletedAt              DateTime?
+  deletedBy              Json?
+  metadata               Json?
+
+  project  Project  @relation(fields: [projectId], references: [id])
+  customer Customer @relation(fields: [customerId], references: [id])
+
+  @@map("contacts")
+}
+
+// ********
+// CUSTOM FIELD
+// ********
+
+enum CustomFieldType {
+  SHORT_TEXT
+  LONG_TEXT
+  NUMBER
+  DATE
+  SINGLE_CHECKBOX
+  MULTI_CHECKBOX
+  RADIO
+  JSON
+  SINGLE_SELECT
+  MULTI_SELECT
+}
+
+enum CustomFieldModel {
+  CUSTOMER
+  ANIMAL
+  SERVICE
+  GROUP
+  MERCHANT
+  FACILITY
+  PERSON
+}
+
+model CustomField {
+  id          String           @id @default(uuid()) @db.Uuid
+  projectId   String           @db.Uuid
+  name        String
+  required    Boolean          @default(false)
+  type        CustomFieldType
+  model       CustomFieldModel
+  helpText    String?
+  placeholder String?
+  createdAt   DateTime         @default(now())
+  createdBy   Json
+  updatedAt   DateTime         @updatedAt
+  updatedBy   Json
+  deletedAt   DateTime?
+  deletedBy   Json?
+  metadata    Json?
+
+  project Project             @relation(fields: [projectId], references: [id])
+  options CustomFieldOption[]
+  values  CustomFieldValue[]
+
+  @@map("custom_fields")
+}
+
+model CustomFieldOption {
+  id            String    @id @default(uuid()) @db.Uuid
+  projectId     String    @db.Uuid
+  customFieldId String    @db.Uuid
+  label         String
+  value         String
+  createdAt     DateTime  @default(now())
+  createdBy     Json
+  updatedAt     DateTime  @updatedAt
+  updatedBy     Json
+  deletedAt     DateTime?
+  deletedBy     Json?
+  metadata      Json?
+
+  customField CustomField @relation(fields: [customFieldId], references: [id])
+  project     Project     @relation(fields: [projectId], references: [id])
+
+  @@map("custom_field_options")
+}
+
+model CustomFieldValue {
+  id            String    @id @default(uuid()) @db.Uuid
+  projectId     String    @db.Uuid
+  customFieldId String    @db.Uuid
+  objectId      String    @db.Uuid
+  value         String
+  createdAt     DateTime  @default(now())
+  createdBy     Json
+  updatedAt     DateTime  @updatedAt
+  updatedBy     Json
+  deletedAt     DateTime?
+  deletedBy     Json?
+  metadata      Json?
+
+  customField CustomField @relation(fields: [customFieldId], references: [id])
+  project     Project     @relation(fields: [projectId], references: [id])
+
+  @@map("custom_field_values")
+}
+
+// ********
+// ANIMAL
+// ********
+
+enum WeightState {
+  SIGNIFICANT_UNDERWEIGHT
+  UNDERWEIGHT
+  PROPER
+  OVERWEIGHT
+  OBESITY
+}
+
+model Animal {
+  id             String       @id @default(uuid()) @db.Uuid
+  projectId      String       @db.Uuid
+  speciesId      String       @db.Uuid
+  breedId        String?      @db.Uuid
+  crossbreedId   String?      @db.Uuid
+  bloodGroupId   String?      @db.Uuid
+  name           String
+  description    String?
+  weight         Float?
+  weightUnit     WeightUnit?
+  weightState    WeightState?
+  height         Float?
+  heightUnit     LengthUnit?
+  tattooId       String?
+  tattooLocation String?
+  chipId         String?
+  chipLocation   String?
+  passportId     String?
+  dateOfBirth    DateTime?
+  dateOfDeath    DateTime?
+  isFixed        Boolean      @default(false)
+
+  createdAt DateTime  @default(now())
+  createdBy Json
+  updatedAt DateTime  @updatedAt
+  updatedBy Json
+  deletedAt DateTime?
+  deletedBy Json?
+  metadata  Json?
+
+  project       Project              @relation(fields: [projectId], references: [id])
+  species       Species              @relation(fields: [speciesId], references: [id])
+  breed         Breed?               @relation(fields: [breedId], references: [id], name: "breed")
+  crossbreed    Breed?               @relation(fields: [crossbreedId], references: [id], name: "crossbreed")
+  bloodGroup    BloodGroup?          @relation(fields: [bloodGroupId], references: [id])
+  tags          Tag[]
+  allergies     Allergen[]
+  relationships AnimalRelationship[]
+
+  @@map("animals")
+}
+
+enum AnimalOwnershipType {
+  OWNER
+  CO_OWNER
+}
+
+model AnimalRelationship {
+  id         String              @id @default(uuid()) @db.Uuid
+  projectId  String              @db.Uuid
+  customerId String              @db.Uuid
+  animalId   String              @db.Uuid
+  type       AnimalOwnershipType
+  createdAt  DateTime            @default(now())
+  createdBy  Json
+  updatedAt  DateTime            @updatedAt
+  updatedBy  Json
+  deletedAt  DateTime?
+  deletedBy  Json?
+  metadata   Json?
+
+  project  Project  @relation(fields: [projectId], references: [id])
+  customer Customer @relation(fields: [customerId], references: [id])
+  animal   Animal   @relation(fields: [animalId], references: [id])
+
+  @@map("animal_relationship")
+}
+
+// ********
+// NOTE
+// ********
+enum NoteModel {
+  CUSTOMER
+  ANIMAL
+}
+
+model Note {
+  id        String    @id @default(uuid()) @db.Uuid
+  projectId String    @db.Uuid
+  title     String
+  note      String?
+  model     NoteModel
+  objectId  String    @db.Uuid
+  createdAt DateTime  @default(now())
+  createdBy Json
+  updatedAt DateTime  @updatedAt
+  updatedBy Json
+  deletedAt DateTime?
+  deletedBy Json?
+  metadata  Json?
+
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@map("notes")
+}
+
+// ********
+// ORGANIZATION
+// ********
+
+model Group {
+  id        String    @id @default(uuid()) @db.Uuid
+  projectId String    @db.Uuid
+  name      String
+  createdAt DateTime  @default(now())
+  createdBy Json
+  updatedAt DateTime  @updatedAt
+  updatedBy Json
+  deletedAt DateTime?
+  deletedBy Json?
+  metadata  Json?
+
+  project              Project            @relation(fields: [projectId], references: [id])
+  merchantAssociations GroupAssociation[]
+  services             Service[]
+
+  @@map("groups")
+}
+
+model GroupAssociation {
+  id         String    @id @default(uuid()) @db.Uuid
+  projectId  String    @db.Uuid
+  groupId    String    @db.Uuid
+  merchantId String    @db.Uuid
+  createdAt  DateTime  @default(now())
+  createdBy  Json
+  updatedAt  DateTime  @updatedAt
+  updatedBy  Json
+  deletedAt  DateTime?
+  deletedBy  Json?
+  metadata   Json?
+
+  project  Project  @relation(fields: [projectId], references: [id])
+  group    Group    @relation(fields: [groupId], references: [id])
+  merchant Merchant @relation(fields: [merchantId], references: [id])
+
+  @@map("group_associations")
+}
+
+model Merchant {
+  id        String    @id @default(uuid()) @db.Uuid
+  projectId String    @db.Uuid
+  name      String
+  createdAt DateTime  @default(now())
+  createdBy Json
+  updatedAt DateTime  @updatedAt
+  updatedBy Json
+  deletedAt DateTime?
+  deletedBy Json?
+  metadata  Json?
+
+  project              Project               @relation(fields: [projectId], references: [id])
+  groupAssociations    GroupAssociation[]
+  facilityAssociations MerchantAssociation[]
+  services             Service[]
+
+  @@map("merchants")
+}
+
+model MerchantAssociation {
+  id         String    @id @default(uuid()) @db.Uuid
+  projectId  String    @db.Uuid
+  merchantId String    @db.Uuid
+  facilityId String    @db.Uuid
+  createdAt  DateTime  @default(now())
+  createdBy  Json
+  updatedAt  DateTime  @updatedAt
+  updatedBy  Json
+  deletedAt  DateTime?
+  deletedBy  Json?
+  metadata   Json?
+
+  project  Project  @relation(fields: [projectId], references: [id])
+  merchant Merchant @relation(fields: [merchantId], references: [id])
+  facility Facility @relation(fields: [facilityId], references: [id])
+
+  @@map("merchant_associations")
+}
+
+model Facility {
+  id        String    @id @default(uuid()) @db.Uuid
+  projectId String    @db.Uuid
+  name      String
+  createdAt DateTime  @default(now())
+  createdBy Json
+  updatedAt DateTime  @updatedAt
+  updatedBy Json
+  deletedAt DateTime?
+  deletedBy Json?
+  metadata  Json?
+
+  project              Project               @relation(fields: [projectId], references: [id])
+  merchantAssociations MerchantAssociation[]
+  services             Service[]
+
+  @@map("facilities")
+}
+
+model Person {
+  id                     String    @id @default(uuid()) @db.Uuid
+  projectId              String    @db.Uuid
+  firstName              String?
+  middleName             String?
+  lastName               String?
+  phoneNumber            String?
+  alternativePhoneNumber String?
+  email                  String?
+  alternativeEmail       String?
+  description            String?
+  role                   String?
+  createdAt              DateTime  @default(now())
+  createdBy              Json
+  updatedAt              DateTime  @updatedAt
+  updatedBy              Json
+  deletedAt              DateTime?
+  deletedBy              Json?
+  metadata               Json?
+
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@map("people")
+}
+
+// ********
+// FILE
+// ********
+
+model File {
+  id        String    @id @default(uuid()) @db.Uuid
+  projectId String    @db.Uuid
+  filename  String
+  type      String
+  url       String
+  size      Int
+  createdAt DateTime  @default(now())
+  createdBy Json
+  updatedAt DateTime  @updatedAt
+  updatedBy Json
+  deletedAt DateTime?
+  deletedBy Json?
+  metadata  Json?
+
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@map("files")
+}
+
+// ********
+// TAG
+// ********
+
+enum TagType {
+  CUSTOMER
+  ANIMAL
+  SERVICE
+}
+
+model Tag {
+  id        String    @id @default(uuid()) @db.Uuid
+  projectId String    @db.Uuid
+  name      String
+  type      TagType
+  createdAt DateTime  @default(now())
+  createdBy Json
+  updatedAt DateTime  @updatedAt
+  updatedBy Json
+  deletedAt DateTime?
+  deletedBy Json?
+  metadata  Json?
+
+  project   Project    @relation(fields: [projectId], references: [id])
+  customers Customer[]
+  animals   Animal[]
+  services  Service[]
+
+  @@map("tags")
+}
+
+// ********
+// STOCK MANAGEMENT
+// ********
+enum BrandStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model Brand {
+  id          String      @id @default(uuid()) @db.Uuid
+  projectId   String      @db.Uuid
+  name        String
+  description String?
+  status      BrandStatus @default(ACTIVE)
+  createdAt   DateTime    @default(now())
+  createdBy   Json
+  updatedAt   DateTime    @updatedAt
+  updatedBy   Json
+  deletedAt   DateTime?
+  deletedBy   Json?
+  metadata    Json?
+
+  project  Project   @relation(fields: [projectId], references: [id])
+  products Product[]
+
+  @@map("brands")
+}
+
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model Product {
+  id          String        @id @default(uuid()) @db.Uuid
+  projectId   String        @db.Uuid
+  brandId     String?       @db.Uuid
+  name        String
+  description String?
+  status      ProductStatus @default(ACTIVE)
+  createdAt   DateTime      @default(now())
+  createdBy   Json
+  updatedAt   DateTime      @updatedAt
+  updatedBy   Json
+  deletedAt   DateTime?
+  deletedBy   Json?
+  metadata    Json?
+
+  project      Project       @relation(fields: [projectId], references: [id])
+  brand        Brand?        @relation(fields: [brandId], references: [id])
+  stocks       Stock[]
+  stockLedgers StockLedger[]
+
+  @@map("products")
+}
+
+enum SupplierStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model Supplier {
+  id                     String         @id @default(uuid()) @db.Uuid
+  projectId              String         @db.Uuid
+  name                   String
+  phoneNumber            String?
+  alternativePhoneNumber String?
+  email                  String?
+  alternativeEmail       String?
+  status                 SupplierStatus @default(ACTIVE)
+  createdAt              DateTime       @default(now())
+  createdBy              Json
+  updatedAt              DateTime       @updatedAt
+  updatedBy              Json
+  deletedAt              DateTime?
+  deletedBy              Json?
+  metadata               Json?
+
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@map("suppliers")
+}
+
+enum WarehouseStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model Warehouse {
+  id        String          @id @default(uuid()) @db.Uuid
+  projectId String          @db.Uuid
+  name      String
+  status    WarehouseStatus @default(ACTIVE)
+  createdAt DateTime        @default(now())
+  createdBy Json
+  updatedAt DateTime        @updatedAt
+  updatedBy Json
+  deletedAt DateTime?
+  deletedBy Json?
+  metadata  Json?
+
+  project      Project       @relation(fields: [projectId], references: [id])
+  stocks       Stock[]
+  stockLedgers StockLedger[]
+
+  @@map("warehouses")
+}
+
+model Stock {
+  id          String    @id @default(uuid()) @db.Uuid
+  projectId   String    @db.Uuid
+  warehouseId String    @db.Uuid
+  productId   String    @db.Uuid
+  quantity    Float
+  createdAt   DateTime  @default(now())
+  createdBy   Json
+  updatedAt   DateTime  @updatedAt
+  updatedBy   Json
+  deletedAt   DateTime?
+  deletedBy   Json?
+  metadata    Json?
+
+  project   Project   @relation(fields: [projectId], references: [id])
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id])
+  product   Product   @relation(fields: [productId], references: [id])
+
+  @@map("stocks")
+}
+
+enum StockLedgerType {
+  CREDIT
+  DEBIT
+}
+
+model StockLedger {
+  id          String          @id @default(uuid()) @db.Uuid
+  projectId   String          @db.Uuid
+  warehouseId String          @db.Uuid
+  productId   String          @db.Uuid
+  type        StockLedgerType
+  quantity    Float
+  createdAt   DateTime        @default(now())
+  createdBy   Json
+  updatedAt   DateTime        @updatedAt
+  updatedBy   Json
+  deletedAt   DateTime?
+  deletedBy   Json?
+  metadata    Json?
+
+  project   Project   @relation(fields: [projectId], references: [id])
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id])
+  product   Product   @relation(fields: [productId], references: [id])
+
+  @@map("stock_ledgers")
+}
+
+// ********
+// SERVICE
+// ********
+model Service {
+  id                   String    @id @default(uuid()) @db.Uuid
+  projectId            String    @db.Uuid
+  name                 String
+  alternateName        String?
+  description          String?
+  isBreedRestricted    Boolean   @default(false)
+  isSpeciesRestricted  Boolean   @default(false)
+  isFacilityRestricted Boolean   @default(false)
+  isMerchantRestricted Boolean   @default(false)
+  isGroupRestricted    Boolean   @default(false)
+  isPersonRestricted   Boolean   @default(false)
+  duration             Int       @default(0)
+  createdAt            DateTime  @default(now())
+  createdBy            Json
+  updatedAt            DateTime  @updatedAt
+  updatedBy            Json
+  deletedAt            DateTime?
+  deletedBy            Json?
+  metadata             Json?
+
+  project    Project           @relation(fields: [projectId], references: [id])
+  overrides  ServiceOverride[]
+  tags       Tag[]
+  species    Species[]
+  breeds     Breed[]
+  facilities Facility[]
+  merchants  Merchant[]
+  groups     Group[]
+
+  @@map("services")
+}
+
+enum ServiceOverrideType {
+  CUSTOMER
+  ANIMAL
+  SPECIES
+  BREED
+  FACILITY
+  MERCHANT
+  GROUP
+  PERSON
+}
+
+model ServiceOverride {
+  id        String              @id @default(uuid()) @db.Uuid
+  projectId String              @db.Uuid
+  serviceId String              @db.Uuid
+  objectId  String              @db.Uuid
+  type      ServiceOverrideType
+  duration  Int?
+  createdAt DateTime            @default(now())
+  createdBy Json
+  updatedAt DateTime            @updatedAt
+  updatedBy Json
+  deletedAt DateTime?
+  deletedBy Json?
+  metadata  Json?
+
+  project Project @relation(fields: [projectId], references: [id])
+  service Service @relation(fields: [serviceId], references: [id])
+
+  @@map("service_overrides")
+}
+
+// ********
+// COMMON
+// ********
+enum WeightUnit {
+  TONNE
+  KILOGRAM
+  GRAM
+  OUNCE
+  POUND
+}
+
+enum LengthUnit {
+  KILOMETRE
+  METRE
+  CENTIMETRE
+  MILLIMETRE
+  INCH
+  FEET
+  YARD
+  MILE
+}

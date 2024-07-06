@@ -1,0 +1,113 @@
+<testExecutions version="1">
+<file path="modules/animal/services/animal-relationship.service.spec.ts">
+<testCase name="AnimalRelationshipService should be defined" duration="8" />
+</file>
+<file path="modules/dictionary/services/reference-value-translation.service.spec.ts">
+<testCase name="ReferenceValueTranslationService should be defined" duration="7" />
+</file>
+<file path="modules/dictionary/services/reference-category-translation.service.spec.ts">
+<testCase name="ReferenceCategoryTranslationService should be defined" duration="7" />
+</file>
+<file path="modules/custom-field/services/custom-field-option.service.spec.ts">
+<testCase name="CustomFieldOptionService should be defined" duration="12" />
+</file>
+<file path="modules/custom-field/services/custom-field-value.service.spec.ts">
+<testCase name="CustomFieldValueService should be defined" duration="9" />
+</file>
+<file path="modules/project/listeners/event.listener.spec.ts">
+<testCase name="WebhookEventListener should be defined" duration="7" />
+</file>
+<file path="modules/organization/services/merchant-association.service.spec.ts">
+<testCase name="MerchantAssociationService should be defined" duration="7" />
+</file>
+<file path="modules/animal/services/animal.service.spec.ts">
+<testCase name="AnimalService should be defined" duration="8" />
+</file>
+<file path="modules/customer/services/customer.service.spec.ts">
+<testCase name="CustomerService should be defined" duration="12" />
+</file>
+<file path="modules/dictionary/services/diagnose-translation.service.spec.ts">
+<testCase name="DiagnoseTranslationService should be defined" duration="6" />
+</file>
+<file path="modules/dictionary/services/blood-group-translation.service.spec.ts">
+<testCase name="BloodGroupTranslationService should be defined" duration="6" />
+</file>
+<file path="modules/organization/services/group-association.service.spec.ts">
+<testCase name="GroupAssociationService should be defined" duration="6" />
+</file>
+<file path="modules/dictionary/services/allergen-translation.service.spec.ts">
+<testCase name="AllergenTranslationService should be defined" duration="17" />
+</file>
+<file path="modules/project/services/webhook-log.service.spec.ts">
+<testCase name="WebhookLogService should be defined" duration="6" />
+</file>
+<file path="modules/custom-field/services/custom-field.service.spec.ts">
+<testCase name="CustomFieldService should be defined" duration="9" />
+</file>
+<file path="modules/dictionary/services/species-translation.service.spec.ts">
+<testCase name="SpeciesTranslationService should be defined" duration="6" />
+</file>
+<file path="modules/inventory/services/stock-ledger.service.spec.ts">
+<testCase name="StockLedgerService should be defined" duration="6" />
+</file>
+<file path="modules/inventory/services/warehouse.service.spec.ts">
+<testCase name="WarehouseService should be defined" duration="16" />
+</file>
+<file path="modules/project/services/webhook.service.spec.ts">
+<testCase name="WebhookService should be defined" duration="5" />
+</file>
+<file path="modules/organization/services/facility.service.spec.ts">
+<testCase name="FacilityService should be defined" duration="6" />
+</file>
+<file path="modules/organization/services/merchant.service.spec.ts">
+<testCase name="MerchantService should be defined" duration="11" />
+</file>
+<file path="modules/inventory/services/supplier.service.spec.ts">
+<testCase name="SupplierService should be defined" duration="6" />
+</file>
+<file path="modules/project/services/project.service.spec.ts">
+<testCase name="ProjectService should be defined" duration="6" />
+</file>
+<file path="modules/inventory/services/product.service.spec.ts">
+<testCase name="ProductService should be defined" duration="26" />
+</file>
+<file path="modules/project/services/api-key.service.spec.ts">
+<testCase name="ApiKeyService should be defined" duration="13" />
+</file>
+<file path="modules/customer/services/contact.service.spec.ts">
+<testCase name="ContactService should be defined" duration="6" />
+</file>
+<file path="modules/dictionary/services/breed-translation.service.spec.ts">
+<testCase name="BreedTranslationService should be defined" duration="5" />
+</file>
+<file path="modules/core/services/events.service.spec.ts">
+<testCase name="EventsService should be defined" duration="6" />
+</file>
+<file path="modules/organization/services/group.service.spec.ts">
+<testCase name="GroupService should be defined" duration="6" />
+</file>
+<file path="modules/inventory/services/stock.service.spec.ts">
+<testCase name="StockService should be defined" duration="7" />
+</file>
+<file path="modules/dictionary/services/reference-value.service.spec.ts">
+<testCase name="ReferenceValueService should be defined" duration="11" />
+</file>
+<file path="modules/inventory/services/brand.service.spec.ts">
+<testCase name="BrandService should be defined" duration="6" />
+</file>
+<file path="modules/note/services/note.service.spec.ts">
+<testCase name="NoteService should be defined" duration="6" />
+</file>
+<file path="modules/data-lake/listeners/event.listener.spec.ts">
+<testCase name="DataLakeEventListener should be defined" duration="6" />
+</file>
+<file path="modules/file/services/file.service.spec.ts">
+<testCase name="FileService should be defined" duration="6" />
+</file>
+<file path="modules/tag/services/tag.service.spec.ts">
+<testCase name="TagService should be defined" duration="5" />
+</file>
+<file path="modules/core/services/prisma.service.spec.ts">
+<testCase name="PrismaService should be defined" duration="11" />
+</file>
+</testExecutions>
