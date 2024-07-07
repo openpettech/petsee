@@ -38,7 +38,7 @@ import { ProjectService } from '../services';
 
 @ApiTags('Project')
 @Controller('projects')
-@UseGuards(AuthGuard('Auth0'))
+@UseGuards(AuthGuard(['Auth0', 'bearer']))
 export class ProjectController {
   private readonly logger = new Logger(ProjectController.name);
 

@@ -38,7 +38,7 @@ import { ApiKeyService, ProjectService } from '../services';
 
 @ApiTags('Project')
 @Controller('projects/:projectId/api-keys')
-@UseGuards(AuthGuard('Auth0'))
+@UseGuards(AuthGuard(['Auth0', 'bearer']))
 export class ApiKeyController {
   private readonly logger = new Logger(ApiKeyController.name);
 

@@ -28,7 +28,7 @@ import { WebhookLogService, WebhookService } from '../services';
 
 @ApiTags('Project')
 @Controller('projects/:projectId/webhooks/:webhookId/logs')
-@UseGuards(AuthGuard('Auth0'))
+@UseGuards(AuthGuard(['Auth0', 'bearer']))
 export class WebhookLogController {
   private readonly logger = new Logger(WebhookLogController.name);
 

@@ -20,10 +20,6 @@ export async function main(project: Project, prisma: PrismaClient) {
   });
   console.timeLog(TIME, `Api Key - ${secretKey}`);
   const last4 = secretKey.slice(-4);
-  const hashedSecretKey = crypto
-    .createHash('sha256')
-    .update(secretKey)
-    .digest('hex');
 
   await prisma.apiKey.upsert({
     where: {
@@ -32,12 +28,33 @@ export async function main(project: Project, prisma: PrismaClient) {
     update: {},
     create: {
       projectId: project.id,
-      secretKey: hashedSecretKey,
+      secretKey: hashSecretKey(secretKey),
       last4,
       createdBy,
       updatedBy: createdBy,
     },
   });
 
+  if (!!process.env.CI_SECRET_KEY) {
+    console.timeLog(TIME, `CI Api Key created`);
+    await prisma.apiKey.upsert({
+      where: {
+        id: process.env.DEFAULT_PROJECT_ID,
+      },
+      update: {},
+      create: {
+        projectId: project.id,
+        secretKey: hashSecretKey(process.env.CI_SECRET_KEY),
+        last4,
+        createdBy,
+        updatedBy: createdBy,
+      },
+    });
+  }
+
   console.timeEnd(TIME);
+
+  function hashSecretKey(key: string) {
+    return crypto.createHash('sha256').update(key).digest('hex');
+  }
 }
