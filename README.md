@@ -16,9 +16,10 @@ Petsee is an open-source REST API framework designed for pettech projects, offer
 - **Inventory Management**:
   - Entities: Brand, Supplier, Product, Warehouse, Stock, Stock Ledgers
 - **Notes System**: Create and manage notes for customers and animals
+- **Task System**: Create and manage tasks for people
 - **Service Management**:
   - Basic service creation
-  - Value override capabilities (Group, Merchant, Facility, Customer, Animal, Breed, Species)
+  - Value override capabilities (Group, Merchant, Facility, Customer, Animal, Breed, Species, Person)
 - **Tagging System**: Apply and manage tags for Animals and Customers
 - **Custom Fields**: Extend entity information with custom fields (see details below)
 

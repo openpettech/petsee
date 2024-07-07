@@ -23,6 +23,7 @@ import { ProjectModule } from '@modules/project';
 import { SearchModule } from '@modules/search';
 import { ServiceModule } from '@modules/service';
 import { TagModule } from '@modules/tag';
+import { TaskModule } from '@modules/task';
 
 const modules: Array<
   Type | DynamicModule | Promise<DynamicModule> | ForwardReference
@@ -42,6 +43,7 @@ const modules: Array<
   ProjectModule,
   ServiceModule,
   TagModule,
+  TaskModule,
   ConditionalModule.registerWhen(
     SearchModule,
     (env: NodeJS.ProcessEnv) => !!env['SEARCH_PROVIDER'],

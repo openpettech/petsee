@@ -7,6 +7,7 @@ import { InventoryEvents } from '@contracts/inventory';
 import { NoteEvents } from '@contracts/note';
 import { OrganizationEvents } from '@contracts/organization';
 import { ProjectEvents } from '@contracts/project';
+import { TaskEvents } from '@contracts/task';
 import { TagEvents } from '@contracts/tag';
 import { ServiceEvents } from '@contracts/service';
 
@@ -20,5 +21,6 @@ export type EventNames =
   | NoteEvents
   | OrganizationEvents
   | ProjectEvents
+  | TaskEvents
   | TagEvents
   | ServiceEvents;
