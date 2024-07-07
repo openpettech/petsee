@@ -30,9 +30,9 @@ import {
   PageOptionsDto,
   ApiPaginatedResponse,
   Context,
+  ServiceRole,
 } from '@contracts/common';
-import { ApiKeyDto } from '@contracts/project';
-import { ApiKey, Ctx } from '@shared/decorators';
+import { Ctx, TriggeredBy } from '@shared/decorators';
 
 import { FacilityService, MerchantAssociationService } from '../services';
 
@@ -83,13 +83,11 @@ export class FacilityController {
     @Ctx() context: Context,
     @Body()
     { merchantId, ...createFacilityDto }: CreateFacilityRequest,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     const commonProps = {
       projectId: context.projectId,
-      createdBy: {
-        apiKey: apiKey.id,
-      },
+      createdBy: triggeredBy,
     };
     const entry = await this.facilityService.create(context, {
       ...commonProps,
@@ -117,15 +115,13 @@ export class FacilityController {
     @Ctx() context: Context,
     @Body() updateFacilityDto: UpdateFacilityRequest,
     @Param('id') id: string,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     return this.facilityService.update(context, {
       id,
       projectId: context.projectId,
       ...updateFacilityDto,
-      updatedBy: {
-        apiKey: apiKey.id,
-      },
+      updatedBy: triggeredBy,
     });
   }
 
@@ -138,14 +134,12 @@ export class FacilityController {
   async delete(
     @Ctx() context: Context,
     @Param('id') id: string,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     return this.facilityService.delete(context, {
       id,
       projectId: context.projectId,
-      deletedBy: {
-        apiKey: apiKey.id,
-      },
+      deletedBy: triggeredBy,
     });
   }
 }

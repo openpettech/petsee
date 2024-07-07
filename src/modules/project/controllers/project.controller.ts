@@ -25,14 +25,14 @@ import {
   PageOptionsDto,
   ApiPaginatedResponse,
   Context,
+  ServiceRole,
 } from '@contracts/common';
 import {
   ProjectDto,
   CreateProjectRequest,
   UpdateProjectRequest,
 } from '@contracts/project';
-import { Auth0UserDto } from '@contracts/auth';
-import { CurrentUser, Ctx } from '@shared/decorators';
+import { Ctx, TriggeredBy } from '@shared/decorators';
 
 import { ProjectService } from '../services';
 
@@ -75,12 +75,10 @@ export class ProjectController {
     @Body()
     createProjectDto: CreateProjectRequest,
     @Ctx() context: Context,
-    @CurrentUser() user: Auth0UserDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     return this.projectService.create(context, {
-      createdBy: {
-        user: user.id,
-      },
+      createdBy: triggeredBy,
       ...createProjectDto,
     });
   }
@@ -95,14 +93,12 @@ export class ProjectController {
     @Body() updateProjectDto: UpdateProjectRequest,
     @Param('id') id: string,
     @Ctx() context: Context,
-    @CurrentUser() user: Auth0UserDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     return this.projectService.update(context, {
       id,
       ...updateProjectDto,
-      updatedBy: {
-        user: user.id,
-      },
+      updatedBy: triggeredBy,
     });
   }
 
@@ -115,13 +111,11 @@ export class ProjectController {
   async delete(
     @Param('id') id: string,
     @Ctx() context: Context,
-    @CurrentUser() user: Auth0UserDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     return this.projectService.delete(context, {
       id,
-      deletedBy: {
-        user: user.id,
-      },
+      deletedBy: triggeredBy,
     });
   }
 }

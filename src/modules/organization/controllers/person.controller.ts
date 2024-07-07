@@ -30,9 +30,9 @@ import {
   PageOptionsDto,
   ApiPaginatedResponse,
   Context,
+  ServiceRole,
 } from '@contracts/common';
-import { ApiKeyDto } from '@contracts/project';
-import { ApiKey, Ctx } from '@shared/decorators';
+import { Ctx, TriggeredBy } from '@shared/decorators';
 
 import { PersonService } from '../services';
 
@@ -80,13 +80,11 @@ export class PersonController {
     @Ctx() context: Context,
     @Body()
     createPersonDto: CreatePersonRequest,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     return this.personService.create(context, {
       projectId: context.projectId,
-      createdBy: {
-        apiKey: apiKey.id,
-      },
+      createdBy: triggeredBy,
       ...createPersonDto,
     });
   }
@@ -101,15 +99,13 @@ export class PersonController {
     @Ctx() context: Context,
     @Body() updatePersonDto: UpdatePersonRequest,
     @Param('id') id: string,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     return this.personService.update(context, {
       id,
       projectId: context.projectId,
       ...updatePersonDto,
-      updatedBy: {
-        apiKey: apiKey.id,
-      },
+      updatedBy: triggeredBy,
     });
   }
 
@@ -122,14 +118,12 @@ export class PersonController {
   async delete(
     @Ctx() context: Context,
     @Param('id') id: string,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     return this.personService.delete(context, {
       id,
       projectId: context.projectId,
-      deletedBy: {
-        apiKey: apiKey.id,
-      },
+      deletedBy: triggeredBy,
     });
   }
 }

@@ -30,9 +30,9 @@ import {
   PageOptionsDto,
   ApiPaginatedResponse,
   Context,
+  ServiceRole,
 } from '@contracts/common';
-import { Auth0UserDto } from '@contracts/auth';
-import { Ctx, CurrentUser } from '@shared/decorators';
+import { Ctx, TriggeredBy } from '@shared/decorators';
 
 import { WebhookService, ProjectService } from '../services';
 
@@ -96,7 +96,7 @@ export class WebhookController {
     @Body()
     createWebhookDto: CreateWebhookRequest,
     @Ctx() context: Context,
-    @CurrentUser() user: Auth0UserDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
     @Param('projectId') projectId: string,
   ) {
     const project = await this.projectService.findOneById(context, projectId);
@@ -106,9 +106,7 @@ export class WebhookController {
 
     return this.webhookService.create(context, {
       projectId,
-      createdBy: {
-        user: user.id,
-      },
+      createdBy: triggeredBy,
       ...createWebhookDto,
     });
   }
@@ -122,7 +120,7 @@ export class WebhookController {
   async update(
     @Body() updateWebhookDto: UpdateWebhookRequest,
     @Ctx() context: Context,
-    @CurrentUser() user: Auth0UserDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
     @Param('id') id: string,
     @Param('projectId') projectId: string,
   ) {
@@ -135,9 +133,7 @@ export class WebhookController {
       id,
       projectId,
       ...updateWebhookDto,
-      updatedBy: {
-        user: user.id,
-      },
+      updatedBy: triggeredBy,
     });
   }
 
@@ -149,7 +145,7 @@ export class WebhookController {
   })
   async delete(
     @Ctx() context: Context,
-    @CurrentUser() user: Auth0UserDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
     @Param('id') id: string,
     @Param('projectId') projectId: string,
   ) {
@@ -161,9 +157,7 @@ export class WebhookController {
     return this.webhookService.delete(context, {
       id,
       projectId,
-      deletedBy: {
-        user: user.id,
-      },
+      deletedBy: triggeredBy,
     });
   }
 }

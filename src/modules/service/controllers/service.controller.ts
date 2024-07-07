@@ -30,9 +30,9 @@ import {
   PageOptionsDto,
   ApiPaginatedResponse,
   Context,
+  ServiceRole,
 } from '@contracts/common';
-import { ApiKeyDto } from '@contracts/project';
-import { ApiKey, Ctx } from '@shared/decorators';
+import { Ctx, TriggeredBy } from '@shared/decorators';
 
 import { ServiceService } from '../services';
 
@@ -80,13 +80,11 @@ export class ServiceController {
     @Ctx() context: Context,
     @Body()
     createServiceDto: CreateServiceRequest,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     return this.serviceService.create(context, {
       projectId: context.projectId,
-      createdBy: {
-        apiKey: apiKey.id,
-      },
+      createdBy: triggeredBy,
       ...createServiceDto,
     });
   }
@@ -101,15 +99,13 @@ export class ServiceController {
     @Ctx() context: Context,
     @Body() updateServiceDto: UpdateServiceRequest,
     @Param('id') id: string,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     return this.serviceService.update(context, {
       id,
       projectId: context.projectId,
       ...updateServiceDto,
-      updatedBy: {
-        apiKey: apiKey.id,
-      },
+      updatedBy: triggeredBy,
     });
   }
 
@@ -122,14 +118,12 @@ export class ServiceController {
   async delete(
     @Ctx() context: Context,
     @Param('id') id: string,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     return this.serviceService.delete(context, {
       id,
       projectId: context.projectId,
-      deletedBy: {
-        apiKey: apiKey.id,
-      },
+      deletedBy: triggeredBy,
     });
   }
 }

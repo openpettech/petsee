@@ -30,9 +30,9 @@ import {
   PageOptionsDto,
   ApiPaginatedResponse,
   Context,
+  ServiceRole,
 } from '@contracts/common';
-import { ApiKeyDto } from '@contracts/project';
-import { ApiKey, Ctx } from '@shared/decorators';
+import { Ctx, TriggeredBy } from '@shared/decorators';
 
 import { MerchantAssociationService } from '../services';
 
@@ -82,13 +82,11 @@ export class MerchantAssociationController {
     @Ctx() context: Context,
     @Body()
     createMerchantAssociationDto: CreateMerchantAssociationRequest,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     return this.merchantAssociationService.create(context, {
       projectId: context.projectId,
-      createdBy: {
-        apiKey: apiKey.id,
-      },
+      createdBy: triggeredBy,
       ...createMerchantAssociationDto,
     });
   }
@@ -103,15 +101,13 @@ export class MerchantAssociationController {
     @Ctx() context: Context,
     @Body() updateMerchantAssociationDto: UpdateMerchantAssociationRequest,
     @Param('id') id: string,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     return this.merchantAssociationService.update(context, {
       id,
       projectId: context.projectId,
       ...updateMerchantAssociationDto,
-      updatedBy: {
-        apiKey: apiKey.id,
-      },
+      updatedBy: triggeredBy,
     });
   }
 
@@ -124,14 +120,12 @@ export class MerchantAssociationController {
   async delete(
     @Ctx() context: Context,
     @Param('id') id: string,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     return this.merchantAssociationService.delete(context, {
       id,
       projectId: context.projectId,
-      deletedBy: {
-        apiKey: apiKey.id,
-      },
+      deletedBy: triggeredBy,
     });
   }
 }

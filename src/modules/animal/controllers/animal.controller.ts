@@ -31,9 +31,9 @@ import {
   PageOptionsDto,
   ApiPaginatedResponse,
   Context,
+  ServiceRole,
 } from '@contracts/common';
-import { ApiKeyDto } from '@contracts/project';
-import { ApiKey, Ctx } from '@shared/decorators';
+import { Ctx, TriggeredBy } from '@shared/decorators';
 
 import { AnimalService, AnimalRelationshipService } from '../services';
 import { AnimalOwnershipType } from '@prisma/client';
@@ -93,12 +93,10 @@ export class AnimalController {
     @Ctx() context: Context,
     @Body()
     createAnimalDto: CreateAnimalRequest,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     const { customerId } = createAnimalDto;
-    const createdBy = {
-      apiKey: apiKey.id,
-    };
+    const createdBy = triggeredBy;
 
     const animal = await this.animalService.create(context, {
       projectId: context.projectId,
@@ -128,16 +126,14 @@ export class AnimalController {
   async update(
     @Ctx() context: Context,
     @Body() updateAnimalDto: UpdateAnimalRequest,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
     @Param('id') id: string,
   ) {
     return this.animalService.update(context, {
       id,
       projectId: context.projectId,
       ...updateAnimalDto,
-      updatedBy: {
-        apiKey: apiKey.id,
-      },
+      updatedBy: triggeredBy,
     });
   }
 
@@ -149,15 +145,13 @@ export class AnimalController {
   })
   async delete(
     @Ctx() context: Context,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
     @Param('id') id: string,
   ) {
     return this.animalService.delete(context, {
       id,
       projectId: context.projectId,
-      deletedBy: {
-        apiKey: apiKey.id,
-      },
+      deletedBy: triggeredBy,
     });
   }
 }

@@ -30,9 +30,9 @@ import {
   PageOptionsDto,
   ApiPaginatedResponse,
   Context,
+  ServiceRole,
 } from '@contracts/common';
-import { ApiKeyDto } from '@contracts/project';
-import { ApiKey, Ctx } from '@shared/decorators';
+import { Ctx, TriggeredBy } from '@shared/decorators';
 
 import { WarehouseService } from '../services';
 
@@ -80,13 +80,11 @@ export class WarehouseController {
     @Ctx() context: Context,
     @Body()
     createWarehouseDto: CreateWarehouseRequest,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     return this.warehouseService.create(context, {
       projectId: context.projectId,
-      createdBy: {
-        apiKey: apiKey.id,
-      },
+      createdBy: triggeredBy,
       ...createWarehouseDto,
     });
   }
@@ -101,15 +99,13 @@ export class WarehouseController {
     @Ctx() context: Context,
     @Body() updateWarehouseDto: UpdateWarehouseRequest,
     @Param('id') id: string,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     return this.warehouseService.update(context, {
       id,
       projectId: context.projectId,
       ...updateWarehouseDto,
-      updatedBy: {
-        apiKey: apiKey.id,
-      },
+      updatedBy: triggeredBy,
     });
   }
 
@@ -122,14 +118,12 @@ export class WarehouseController {
   async delete(
     @Ctx() context: Context,
     @Param('id') id: string,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     return this.warehouseService.delete(context, {
       id,
       projectId: context.projectId,
-      deletedBy: {
-        apiKey: apiKey.id,
-      },
+      deletedBy: triggeredBy,
     });
   }
 }

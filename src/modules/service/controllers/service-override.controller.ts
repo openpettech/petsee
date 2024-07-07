@@ -30,9 +30,9 @@ import {
   PageOptionsDto,
   ApiPaginatedResponse,
   Context,
+  ServiceRole,
 } from '@contracts/common';
-import { ApiKeyDto } from '@contracts/project';
-import { ApiKey, Ctx } from '@shared/decorators';
+import { Ctx, TriggeredBy } from '@shared/decorators';
 
 import { ServiceOverrideService } from '../services';
 
@@ -82,13 +82,11 @@ export class ServiceOverrideController {
     @Ctx() context: Context,
     @Body()
     createServiceOverrideDto: CreateServiceOverrideRequest,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     return this.serviceOverrideService.create(context, {
       projectId: context.projectId,
-      createdBy: {
-        apiKey: apiKey.id,
-      },
+      createdBy: triggeredBy,
       ...createServiceOverrideDto,
     });
   }
@@ -103,15 +101,13 @@ export class ServiceOverrideController {
     @Ctx() context: Context,
     @Body() updateServiceOverrideDto: UpdateServiceOverrideRequest,
     @Param('id') id: string,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     return this.serviceOverrideService.update(context, {
       id,
       projectId: context.projectId,
       ...updateServiceOverrideDto,
-      updatedBy: {
-        apiKey: apiKey.id,
-      },
+      updatedBy: triggeredBy,
     });
   }
 
@@ -124,14 +120,12 @@ export class ServiceOverrideController {
   async delete(
     @Ctx() context: Context,
     @Param('id') id: string,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     return this.serviceOverrideService.delete(context, {
       id,
       projectId: context.projectId,
-      deletedBy: {
-        apiKey: apiKey.id,
-      },
+      deletedBy: triggeredBy,
     });
   }
 }

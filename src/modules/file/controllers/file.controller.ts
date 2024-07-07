@@ -24,9 +24,9 @@ import {
   PageOptionsDto,
   ApiPaginatedResponse,
   Context,
+  ServiceRole,
 } from '@contracts/common';
-import { ApiKeyDto } from '@contracts/project';
-import { ApiKey, Ctx } from '@shared/decorators';
+import { Ctx, TriggeredBy } from '@shared/decorators';
 import { ObjectStorageService } from '@modules/core';
 
 import { FileService } from '../services';
@@ -78,7 +78,7 @@ export class FileController {
   @UseInterceptors(FileInterceptor('file'))
   async create(
     @Ctx() context: Context,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
     @UploadedFile() file: Express.Multer.File,
   ) {
     const { id, url } = await this.objectStorageService.store(context, {
@@ -93,9 +93,7 @@ export class FileController {
       filename: file.originalname,
       type: file.mimetype,
       projectId: context.projectId,
-      createdBy: {
-        apiKey: apiKey.id,
-      },
+      createdBy: triggeredBy,
     });
   }
 }

@@ -23,9 +23,9 @@ import {
   PageOptionsDto,
   ApiPaginatedResponse,
   Context,
+  ServiceRole,
 } from '@contracts/common';
-import { ApiKeyDto } from '@contracts/project';
-import { ApiKey, Ctx } from '@shared/decorators';
+import { Ctx, TriggeredBy } from '@shared/decorators';
 
 import { StockLedgerService } from '../services';
 import { StockLedgerType } from '@prisma/client';
@@ -74,7 +74,7 @@ export class StockLedgerController {
     @Ctx() context: Context,
     @Body()
     createStockLedgerDto: StockLedgerTransactionRequest,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     const { type, quantity } = createStockLedgerDto;
     if (type === StockLedgerType.CREDIT && quantity <= 0) {
@@ -86,9 +86,7 @@ export class StockLedgerController {
 
     return this.stockLedgerService.transaction(context, {
       projectId: context.projectId,
-      createdBy: {
-        apiKey: apiKey.id,
-      },
+      createdBy: triggeredBy,
       ...createStockLedgerDto,
     });
   }

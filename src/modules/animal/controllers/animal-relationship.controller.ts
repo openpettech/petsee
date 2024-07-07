@@ -30,9 +30,9 @@ import {
   PageOptionsDto,
   ApiPaginatedResponse,
   Context,
+  ServiceRole,
 } from '@contracts/common';
-import { ApiKeyDto } from '@contracts/project';
-import { ApiKey, Ctx } from '@shared/decorators';
+import { Ctx, TriggeredBy } from '@shared/decorators';
 
 import { AnimalRelationshipService } from '../services';
 
@@ -83,13 +83,11 @@ export class AnimalRelationshipController {
     @Ctx() context: Context,
     @Body()
     createAnimalRelationshipDto: CreateAnimalRelationshipRequest,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     return this.animalRelationshipService.create(context, {
       projectId: context.projectId,
-      createdBy: {
-        apiKey: apiKey.id,
-      },
+      createdBy: triggeredBy,
       ...createAnimalRelationshipDto,
     });
   }
@@ -103,16 +101,14 @@ export class AnimalRelationshipController {
   async update(
     @Ctx() context: Context,
     @Body() updateAnimalRelationshipDto: UpdateAnimalRelationshipRequest,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
     @Param('id') id: string,
   ) {
     return this.animalRelationshipService.update(context, {
       id,
       projectId: context.projectId,
       ...updateAnimalRelationshipDto,
-      updatedBy: {
-        apiKey: apiKey.id,
-      },
+      updatedBy: triggeredBy,
     });
   }
 
@@ -124,15 +120,13 @@ export class AnimalRelationshipController {
   })
   async delete(
     @Ctx() context: Context,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
     @Param('id') id: string,
   ) {
     return this.animalRelationshipService.delete(context, {
       id,
       projectId: context.projectId,
-      deletedBy: {
-        apiKey: apiKey.id,
-      },
+      deletedBy: triggeredBy,
     });
   }
 }

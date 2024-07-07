@@ -161,7 +161,6 @@ export class DictionaryController {
 
   private getLocale(lang?: string) {
     const isoCode = lang?.split('-')?.[0];
-    console.log('isoCode', isoCode);
     if (
       ['en', 'de', 'es', 'pt', 'fr', 'it', 'pl', 'ja', 'ko', 'zh'].includes(
         isoCode,

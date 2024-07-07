@@ -1,7 +1,7 @@
 import { Expose } from 'class-transformer';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class Auth0UserDto {
+export class UserDto {
   @Expose()
   @IsString()
   @IsNotEmpty()

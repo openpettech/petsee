@@ -20,9 +20,9 @@ import {
   PageOptionsDto,
   ApiPaginatedResponse,
   Context,
+  ServiceRole,
 } from '@contracts/common';
-import { Auth0UserDto } from '@contracts/auth';
-import { Ctx, CurrentUser } from '@shared/decorators';
+import { Ctx, TriggeredBy } from '@shared/decorators';
 
 import { WebhookLogService, WebhookService } from '../services';
 
@@ -102,7 +102,7 @@ export class WebhookLogController {
   })
   async resend(
     @Ctx() context: Context,
-    @CurrentUser() user: Auth0UserDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
     @Param('projectId') projectId: string,
     @Param('webhookId') webhookId: string,
     @Param('id') id: string,
@@ -145,9 +145,7 @@ export class WebhookLogController {
         projectId,
         response: input,
         status: WebhookRequestStatus.SUCCEEDED,
-        updatedBy: {
-          user: user.id,
-        },
+        updatedBy: triggeredBy,
       });
     } catch (err) {
       this.logger.error(
@@ -159,9 +157,7 @@ export class WebhookLogController {
         projectId,
         response: err,
         status: WebhookRequestStatus.ERRORED,
-        updatedBy: {
-          user: user.id,
-        },
+        updatedBy: triggeredBy,
       });
     }
   }

@@ -30,9 +30,9 @@ import {
   PageOptionsDto,
   ApiPaginatedResponse,
   Context,
+  ServiceRole,
 } from '@contracts/common';
-import { Auth0UserDto } from '@contracts/auth';
-import { Ctx, CurrentUser } from '@shared/decorators';
+import { Ctx, TriggeredBy } from '@shared/decorators';
 
 import { ApiKeyService, ProjectService } from '../services';
 
@@ -98,7 +98,7 @@ export class ApiKeyController {
     @Body()
     createApiKeyDto: CreateApiKeyRequest,
     @Ctx() context: Context,
-    @CurrentUser() user: Auth0UserDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
     @Param('projectId') projectId: string,
   ) {
     const project = await this.projectService.findOneById(context, projectId);
@@ -108,9 +108,7 @@ export class ApiKeyController {
 
     return this.apiKeyService.create(context, {
       projectId,
-      createdBy: {
-        user: user.id,
-      },
+      createdBy: triggeredBy,
       ...createApiKeyDto,
     });
   }
@@ -124,7 +122,7 @@ export class ApiKeyController {
   async update(
     @Body() updateApiKeyDto: UpdateApiKeyRequest,
     @Ctx() context: Context,
-    @CurrentUser() user: Auth0UserDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
     @Param('id') id: string,
     @Param('projectId') projectId: string,
   ) {
@@ -137,9 +135,7 @@ export class ApiKeyController {
       id,
       projectId,
       ...updateApiKeyDto,
-      updatedBy: {
-        user: user.id,
-      },
+      updatedBy: triggeredBy,
     });
   }
 
@@ -151,7 +147,7 @@ export class ApiKeyController {
   })
   async delete(
     @Ctx() context: Context,
-    @CurrentUser() user: Auth0UserDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
     @Param('id') id: string,
     @Param('projectId') projectId: string,
   ) {
@@ -163,9 +159,7 @@ export class ApiKeyController {
     return this.apiKeyService.delete(context, {
       id,
       projectId,
-      deletedBy: {
-        user: user.id,
-      },
+      deletedBy: triggeredBy,
     });
   }
 }

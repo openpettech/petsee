@@ -33,9 +33,9 @@ import {
   PageOptionsDto,
   ApiPaginatedResponse,
   Context,
+  ServiceRole,
 } from '@contracts/common';
-import { ApiKey, Ctx } from '@shared/decorators';
-import { ApiKeyDto } from '@contracts/project';
+import { Ctx, TriggeredBy } from '@shared/decorators';
 
 import { CustomFieldOptionService, CustomFieldService } from '../services';
 
@@ -91,7 +91,7 @@ export class CustomFieldOptionController {
     @Ctx() context: Context,
     @Body()
     createCustomFieldOptionDto: CreateCustomFieldOptionRequest,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
   ) {
     const customField = await this.customFieldService.findOneById(context, {
       projectId: context.projectId,
@@ -116,9 +116,7 @@ export class CustomFieldOptionController {
     return this.customFieldOptionService.create(context, {
       ...createCustomFieldOptionDto,
       projectId: context.projectId,
-      createdBy: {
-        apiKey: apiKey.id,
-      },
+      createdBy: triggeredBy,
     });
   }
 
@@ -131,16 +129,14 @@ export class CustomFieldOptionController {
   async update(
     @Ctx() context: Context,
     @Body() updateCustomFieldOptionDto: UpdateCustomFieldOptionRequest,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
     @Param('id') id: string,
   ) {
     return this.customFieldService.update(context, {
       id,
       projectId: context.projectId,
       ...updateCustomFieldOptionDto,
-      updatedBy: {
-        apiKey: apiKey.id,
-      },
+      updatedBy: triggeredBy,
     });
   }
 
@@ -152,15 +148,13 @@ export class CustomFieldOptionController {
   })
   async delete(
     @Ctx() context: Context,
-    @ApiKey() apiKey: ApiKeyDto,
+    @TriggeredBy() triggeredBy: ServiceRole,
     @Param('id') id: string,
   ) {
     return this.customFieldService.delete(context, {
       id,
       projectId: context.projectId,
-      deletedBy: {
-        apiKey: apiKey.id,
-      },
+      deletedBy: triggeredBy,
     });
   }
 }
