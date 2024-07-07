@@ -37,6 +37,20 @@ export function config(): IConfig {
       issuer: process.env.AUTH0_ISSUER_URL,
       audience: process.env.AUTH0_AUDIENCE,
     },
+    communication: {
+      sms: {
+        provider: process.env.SMS_PROVIDER,
+        ...(process.env.SMS_PROVIDER === 'twilio'
+          ? {
+              twilio: {
+                accountSid: process.env.TWILIO_ACCOUNT_SID,
+                authToken: process.env.TWILIO_AUTH_TOKEN,
+                messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID,
+              },
+            }
+          : {}),
+      },
+    },
     monitoring: {
       ...(!!process.env.SENTRY_DNS
         ? {

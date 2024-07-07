@@ -1,4 +1,5 @@
 import { AnimalEvents } from '@contracts/animal';
+import { CommunicationEvents } from '@contracts/communication';
 import { CustomerEvents } from '@contracts/customer';
 import { CustomFieldEvents } from '@contracts/custom-field';
 import { DictionaryEvents } from '@contracts/dictionary';
@@ -13,6 +14,7 @@ import { ServiceEvents } from '@contracts/service';
 
 export type EventNames =
   | AnimalEvents
+  | CommunicationEvents
   | CustomerEvents
   | CustomFieldEvents
   | DictionaryEvents

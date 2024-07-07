@@ -30,4 +30,9 @@ export const validationSchema = Joi.object({
   AUTH0_AUDIENCE: Joi.string().required(),
 
   SENTRY_DNS: Joi.string().optional().default(null),
+
+  SMS_PROVIDER: Joi.string().required(),
+  TWILIO_ACCOUNT_SID: Joi.string().optional().default(null),
+  TWILIO_AUTH_TOKEN: Joi.string().optional().default(null),
+  TWILIO_MESSAGING_SERVICE_SID: Joi.string().optional().default(null),
 });

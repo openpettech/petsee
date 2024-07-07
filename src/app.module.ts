@@ -10,6 +10,7 @@ import { ConditionalModule } from '@nestjs/config';
 import { AnimalModule } from '@modules/animal';
 import { AuthModule } from '@modules/auth';
 import { CoreModule } from '@modules/core';
+import { CommunicationModule } from '@modules/communication';
 import { CustomFieldModule } from '@modules/custom-field';
 import { CustomerModule } from '@modules/customer';
 import { DataLakeModule } from '@modules/data-lake';
@@ -31,6 +32,7 @@ const modules: Array<
   AnimalModule,
   AuthModule,
   CoreModule,
+  CommunicationModule,
   CustomFieldModule,
   CustomerModule,
   DataLakeModule,

@@ -4,6 +4,7 @@ import { ISearch } from './search.interface';
 import { IObjectStorage } from './object-storage.interface';
 import { IAuth } from './auth.interface';
 import { IMonitoring } from './monitoring.interface';
+import { ICommunication } from './communication.interface';
 
 export interface IConfig {
   id: string;
@@ -15,4 +16,5 @@ export interface IConfig {
   objectStorage: IObjectStorage;
   auth: IAuth;
   monitoring: IMonitoring;
+  communication: ICommunication;
 }

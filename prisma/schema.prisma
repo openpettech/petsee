@@ -296,7 +296,8 @@ model Project {
   stockLedgers         StockLedger[]
   services             Service[]
   serviceOverrides     ServiceOverride[]
-  tasks     Task[]
+  tasks                Task[]
+  smsLogs              SmsLog[]
 
   @@map("projects")
 }
@@ -746,7 +747,7 @@ model Person {
   metadata               Json?
 
   project Project @relation(fields: [projectId], references: [id])
-  tasks Task[]
+  tasks   Task[]
 
   @@map("people")
 }
@@ -1030,9 +1031,8 @@ model ServiceOverride {
   @@map("service_overrides")
 }
 
-
 // ********
-// TAST
+// TASK
 // ********
 enum TaskStatus {
   TODO
@@ -1048,26 +1048,59 @@ enum TaskType {
 }
 
 model Task {
-  id                   String    @id @default(uuid()) @db.Uuid
-  projectId            String    @db.Uuid
-  title                 String
-  text                 String?
-  status        TaskStatus @default(TODO)
-  type          TaskType @default(TASK)
-  due           DateTime?
-  remind DateTime?
-  personId             String @db.Uuid
-  createdAt            DateTime  @default(now())
-  createdBy            Json
-  updatedAt            DateTime  @updatedAt
-  updatedBy            Json
-  deletedAt            DateTime?
-  deletedBy            Json?
-  metadata             Json?
+  id        String     @id @default(uuid()) @db.Uuid
+  projectId String     @db.Uuid
+  title     String
+  text      String?
+  status    TaskStatus @default(TODO)
+  type      TaskType   @default(TASK)
+  due       DateTime?
+  remind    DateTime?
+  personId  String     @db.Uuid
+  createdAt DateTime   @default(now())
+  createdBy Json
+  updatedAt DateTime   @updatedAt
+  updatedBy Json
+  deletedAt DateTime?
+  deletedBy Json?
+  metadata  Json?
 
-  project    Project           @relation(fields: [projectId], references: [id])
-  person    Person           @relation(fields: [personId], references: [id])
+  project Project @relation(fields: [projectId], references: [id])
+  person  Person  @relation(fields: [personId], references: [id])
+
   @@map("tasks")
+}
+
+// ********
+// Communication
+// ********
+enum SmsStatus {
+  QUEUED
+  SENT
+  DELIVERED
+  ERRORED
+}
+
+model SmsLog {
+  id          String    @id @default(uuid()) @db.Uuid
+  projectId   String    @db.Uuid
+  providerId  String
+  message     String
+  provider    String
+  phoneNumber String
+  error       String?
+  status      SmsStatus @default(QUEUED)
+  createdAt   DateTime  @default(now())
+  createdBy   Json
+  updatedAt   DateTime  @updatedAt
+  updatedBy   Json
+  deletedAt   DateTime?
+  deletedBy   Json?
+  metadata    Json?
+
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@map("sms_logs")
 }
 
 // ********

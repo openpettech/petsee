@@ -39,12 +39,17 @@ Petsee is an open-source REST API framework designed for pettech projects, offer
 
 - **Data Lake**: Track changes and modifications across all entities
 
+### Communication
+
+- **SMS**: Send and track sms messages
+
 ## 🧩 Modular Architecture
 
 Petsee is built with modularity in mind, allowing easy adaptation and extension of core functionalities.
 
 ### Object Storage
 
+- Current support: Minio
 - Default: Minio
 - Coming soon: S3 support
 - Extensible: Create custom adapters for other storage solutions
@@ -52,6 +57,7 @@ Petsee is built with modularity in mind, allowing easy adaptation and extension 
 ### Search Engine
 
 - Current support: Meilisearch
+- Default: Meilisearch
 - Optional: Can be disabled if not needed
 - Extensible: Implement adapters for other search engines
 
@@ -59,6 +65,12 @@ Petsee is built with modularity in mind, allowing easy adaptation and extension 
 
 - Default: Auth0
 - Future plans: Support for additional authentication providers
+
+### SMS
+
+- Current support: Twilio
+- Default: Twilio
+- Extensible: Implement adapters for other search engines
 
 ## 🔧 Custom Fields
 
