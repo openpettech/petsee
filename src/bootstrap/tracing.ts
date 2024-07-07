@@ -5,7 +5,7 @@ import {
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import * as process from 'process';
 import { Resource } from '@opentelemetry/resources';
-import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+import { SEMRESATTRS_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 import { PrismaInstrumentation } from '@prisma/instrumentation';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
@@ -33,7 +33,7 @@ const spanProcessor =
 export const otelSDK = new NodeSDK({
   spanProcessor,
   resource: new Resource({
-    [SemanticResourceAttributes.SERVICE_NAME]: `xyz`,
+    [SEMRESATTRS_SERVICE_NAME]: `Petsee`,
   }),
   instrumentations: [
     getNodeAutoInstrumentations({
