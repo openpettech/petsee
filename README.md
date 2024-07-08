@@ -106,6 +106,9 @@ Petsee supports the addition of custom fields to extend information for various 
 - Add group-wide policy or procedure references
 - Include person-specific skills or qualifications
 - Custom notification types to manage
+- Flag document template fields that are printable
+- Image for document template field option
+- Title of a created document
 
 Custom fields provide the flexibility to tailor the Petsee platform to specific business needs without modifying the core data structure.
 
