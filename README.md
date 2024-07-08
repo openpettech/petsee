@@ -90,6 +90,10 @@ Petsee supports the addition of custom fields to extend information for various 
 - Group
 - Person
 - Notification Center
+- Document Template
+- Document Template Field
+- Document Template Field Option
+- Document
 
 ### Custom Field Capabilities:
 
