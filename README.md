@@ -41,6 +41,7 @@ Petsee is an open-source REST API framework designed for pettech projects, offer
 
 ### Communication
 
+- **Notification Center**: Manage communication channels
 - **SMS**: Send and track sms messages
 
 ## 🧩 Modular Architecture
@@ -84,6 +85,7 @@ Petsee supports the addition of custom fields to extend information for various 
 - Merchant
 - Group
 - Person
+- Notification Center
 
 ### Custom Field Capabilities:
 
@@ -99,6 +101,7 @@ Petsee supports the addition of custom fields to extend information for various 
 - Store custom merchant categories or business types
 - Add group-wide policy or procedure references
 - Include person-specific skills or qualifications
+- Custom notification types to manage
 
 Custom fields provide the flexibility to tailor the Petsee platform to specific business needs without modifying the core data structure.
 
