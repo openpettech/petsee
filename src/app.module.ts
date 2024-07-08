@@ -22,6 +22,7 @@ import { NoteModule } from '@modules/note';
 import { NotificationCenterModule } from '@modules/notification-center';
 import { OrganizationModule } from '@modules/organization';
 import { ProjectModule } from '@modules/project';
+import { ResourceModule } from '@modules/resource';
 import { SearchModule } from '@modules/search';
 import { ServiceModule } from '@modules/service';
 import { TagModule } from '@modules/tag';
@@ -45,6 +46,7 @@ const modules: Array<
   NotificationCenterModule,
   OrganizationModule,
   ProjectModule,
+  ResourceModule,
   ServiceModule,
   TagModule,
   TaskModule,
