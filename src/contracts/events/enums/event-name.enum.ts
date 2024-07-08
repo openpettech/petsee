@@ -6,6 +6,7 @@ import { DictionaryEvents } from '@contracts/dictionary';
 import { FileEvents } from '@contracts/file';
 import { InventoryEvents } from '@contracts/inventory';
 import { NoteEvents } from '@contracts/note';
+import { NotificationCenterEvents } from '@contracts/notification-center';
 import { OrganizationEvents } from '@contracts/organization';
 import { ProjectEvents } from '@contracts/project';
 import { TaskEvents } from '@contracts/task';
@@ -21,6 +22,7 @@ export type EventNames =
   | FileEvents
   | InventoryEvents
   | NoteEvents
+  | NotificationCenterEvents
   | OrganizationEvents
   | ProjectEvents
   | TaskEvents

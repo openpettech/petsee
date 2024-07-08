@@ -19,6 +19,7 @@ import { FileModule } from '@modules/file';
 import { InventoryModule } from '@modules/inventory';
 import { HealthModule } from '@modules/health';
 import { NoteModule } from '@modules/note';
+import { NotificationCenterModule } from '@modules/notification-center';
 import { OrganizationModule } from '@modules/organization';
 import { ProjectModule } from '@modules/project';
 import { SearchModule } from '@modules/search';
@@ -41,6 +42,7 @@ const modules: Array<
   InventoryModule,
   HealthModule,
   NoteModule,
+  NotificationCenterModule,
   OrganizationModule,
   ProjectModule,
   ServiceModule,

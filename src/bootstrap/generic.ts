@@ -21,5 +21,9 @@ export function setupGeneric(app: INestApplication) {
     }),
   );
   app.useGlobalPipes(new I18nValidationPipe());
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  app.useGlobalInterceptors(
+    new ClassSerializerInterceptor(app.get(Reflector), {
+      exposeDefaultValues: true,
+    }),
+  );
 }
