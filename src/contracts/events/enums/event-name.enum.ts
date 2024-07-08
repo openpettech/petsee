@@ -3,6 +3,7 @@ import { CommunicationEvents } from '@contracts/communication';
 import { CustomerEvents } from '@contracts/customer';
 import { CustomFieldEvents } from '@contracts/custom-field';
 import { DictionaryEvents } from '@contracts/dictionary';
+import { DocumentEvents } from '@contracts/document';
 import { FileEvents } from '@contracts/file';
 import { InventoryEvents } from '@contracts/inventory';
 import { NoteEvents } from '@contracts/note';
@@ -20,6 +21,7 @@ export type EventNames =
   | CustomerEvents
   | CustomFieldEvents
   | DictionaryEvents
+  | DocumentEvents
   | FileEvents
   | InventoryEvents
   | NoteEvents

@@ -15,6 +15,7 @@ import { CustomFieldModule } from '@modules/custom-field';
 import { CustomerModule } from '@modules/customer';
 import { DataLakeModule } from '@modules/data-lake';
 import { DictionaryModule } from '@modules/dictionary';
+import { DocumentModule } from '@modules/document';
 import { FileModule } from '@modules/file';
 import { InventoryModule } from '@modules/inventory';
 import { HealthModule } from '@modules/health';
@@ -39,6 +40,7 @@ const modules: Array<
   CustomerModule,
   DataLakeModule,
   DictionaryModule,
+  DocumentModule,
   FileModule,
   InventoryModule,
   HealthModule,

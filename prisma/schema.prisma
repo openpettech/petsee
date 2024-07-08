@@ -269,38 +269,43 @@ model Project {
   deletedAt DateTime?
   deletedBy Json?
 
-  customers            Customer[]
-  contacts             Contact[]
-  animals              Animal[]
-  animalRelationships  AnimalRelationship[]
-  customFields         CustomField[]
-  customFieldOptions   CustomFieldOption[]
-  customFieldValues    CustomFieldValue[]
-  webhooks             Webhook[]
-  webhookLogs          WebhookLog[]
-  apiKeys              ApiKey[]
-  notes                Note[]
-  groups               Group[]
-  groupAssociations    GroupAssociation[]
-  merchants            Merchant[]
-  merchantAssociations MerchantAssociation[]
-  facilities           Facility[]
-  people               Person[]
-  files                File[]
-  tags                 Tag[]
-  brands               Brand[]
-  products             Product[]
-  suppliers            Supplier[]
-  warehouses           Warehouse[]
-  stocks               Stock[]
-  stockLedgers         StockLedger[]
-  services             Service[]
-  serviceOverrides     ServiceOverride[]
-  tasks                Task[]
-  smsLogs              SmsLog[]
-  notificationCenter   NotificationCenter[]
-  resources            Resource[]
-  resourceTypes        ResourceType[]
+  customers                    Customer[]
+  contacts                     Contact[]
+  animals                      Animal[]
+  animalRelationships          AnimalRelationship[]
+  customFields                 CustomField[]
+  customFieldOptions           CustomFieldOption[]
+  customFieldValues            CustomFieldValue[]
+  webhooks                     Webhook[]
+  webhookLogs                  WebhookLog[]
+  apiKeys                      ApiKey[]
+  notes                        Note[]
+  groups                       Group[]
+  groupAssociations            GroupAssociation[]
+  merchants                    Merchant[]
+  merchantAssociations         MerchantAssociation[]
+  facilities                   Facility[]
+  people                       Person[]
+  files                        File[]
+  tags                         Tag[]
+  brands                       Brand[]
+  products                     Product[]
+  suppliers                    Supplier[]
+  warehouses                   Warehouse[]
+  stocks                       Stock[]
+  stockLedgers                 StockLedger[]
+  services                     Service[]
+  serviceOverrides             ServiceOverride[]
+  tasks                        Task[]
+  smsLogs                      SmsLog[]
+  notificationCenter           NotificationCenter[]
+  resources                    Resource[]
+  resourceTypes                ResourceType[]
+  documentTemplates            DocumentTemplate[]
+  documentTemplateFields       DocumentTemplateField[]
+  documentTemplateFieldOptions DocumentTemplateFieldOption[]
+  documents                    Document[]
+  documentFieldData            DocumentFieldData[]
 
   @@map("projects")
 }
@@ -453,6 +458,10 @@ enum CustomFieldModel {
   FACILITY
   PERSON
   NOTIFICATION_CENTER
+  DOCUMENT_TEMPLATE
+  DOCUMENT_TEMPLATE_FIELD
+  DOCUMENT_TEMPLATE_FIELD_OPTION
+  DOCUMENT
 }
 
 model CustomField {
@@ -1192,6 +1201,146 @@ model Resource {
   resourceType ResourceType @relation(fields: [resourceTypeId], references: [id])
 
   @@map("resources")
+}
+
+// ********
+// Document
+// ********
+enum DocumentTemplateStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model DocumentTemplate {
+  id          String                 @id @default(uuid()) @db.Uuid
+  projectId   String                 @db.Uuid
+  name        String
+  description String?
+  status      DocumentTemplateStatus @default(ACTIVE)
+  createdAt   DateTime               @default(now())
+  createdBy   Json
+  updatedAt   DateTime               @updatedAt
+  updatedBy   Json
+  deletedAt   DateTime?
+  deletedBy   Json?
+  metadata    Json?
+
+  project   Project                 @relation(fields: [projectId], references: [id])
+  fields    DocumentTemplateField[]
+  fieldOptions    DocumentTemplateFieldOption[]
+  documents Document[]
+
+  @@map("document_templates")
+}
+
+enum DocumentTemplateFieldStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum DocumentTemplateFieldType {
+  SHORT_TEXT
+  LONG_TEXT
+  NUMBER
+  DATE
+  CHECKBOX
+  SELECT
+  MULTI_SELECT
+}
+
+model DocumentTemplateField {
+  id                 String                      @id @default(uuid()) @db.Uuid
+  projectId          String                      @db.Uuid
+  documentTemplateId String                      @db.Uuid
+  label              String
+  required           Boolean                     @default(false)
+  description        String?
+  helperText         String?
+  order              Int                         @default(0)
+  status             DocumentTemplateFieldStatus @default(ACTIVE)
+  type               DocumentTemplateFieldType
+  createdAt          DateTime                    @default(now())
+  createdBy          Json
+  updatedAt          DateTime                    @updatedAt
+  updatedBy          Json
+  deletedAt          DateTime?
+  deletedBy          Json?
+  metadata           Json?
+
+  project  Project                       @relation(fields: [projectId], references: [id])
+  template DocumentTemplate              @relation(fields: [documentTemplateId], references: [id])
+  options  DocumentTemplateFieldOption[]
+  data     DocumentFieldData[]
+
+  @@map("document_template_fields")
+}
+
+enum DocumentTemplateFieldOptionStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model DocumentTemplateFieldOption {
+  id                      String                      @id @default(uuid()) @db.Uuid
+  projectId               String                      @db.Uuid
+  documentTemplateId String                      @db.Uuid
+  documentTemplateFieldId String                      @db.Uuid
+  label                   String
+  value                   String
+  status                  DocumentTemplateFieldOptionStatus @default(ACTIVE)
+  createdAt               DateTime                    @default(now())
+  createdBy               Json
+  updatedAt               DateTime                    @updatedAt
+  updatedBy               Json
+  deletedAt               DateTime?
+  deletedBy               Json?
+  metadata                Json?
+
+  project Project               @relation(fields: [projectId], references: [id])
+  field   DocumentTemplateField @relation(fields: [documentTemplateFieldId], references: [id])
+  template   DocumentTemplate @relation(fields: [documentTemplateId], references: [id])
+
+  @@map("document_template_field_options")
+}
+
+model Document {
+  id                 String    @id @default(uuid()) @db.Uuid
+  projectId          String    @db.Uuid
+  documentTemplateId String    @db.Uuid
+  createdAt          DateTime  @default(now())
+  createdBy          Json
+  updatedAt          DateTime  @updatedAt
+  updatedBy          Json
+  deletedAt          DateTime?
+  deletedBy          Json?
+  metadata           Json?
+
+  project  Project             @relation(fields: [projectId], references: [id])
+  template DocumentTemplate    @relation(fields: [documentTemplateId], references: [id])
+  data     DocumentFieldData[]
+
+  @@map("documents")
+}
+
+model DocumentFieldData {
+  id                      String    @id @default(uuid()) @db.Uuid
+  projectId               String    @db.Uuid
+  documentId              String    @db.Uuid
+  documentTemplateFieldId String    @db.Uuid
+  value                   String
+  createdAt               DateTime  @default(now())
+  createdBy               Json
+  updatedAt               DateTime  @updatedAt
+  updatedBy               Json
+  deletedAt               DateTime?
+  deletedBy               Json?
+  metadata                Json?
+
+  project               Project               @relation(fields: [projectId], references: [id])
+  document              Document              @relation(fields: [documentId], references: [id])
+  documentTemplateField DocumentTemplateField @relation(fields: [documentTemplateFieldId], references: [id])
+
+  @@map("document_field_data")
 }
 
 // ********
