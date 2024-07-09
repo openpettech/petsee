@@ -15,6 +15,7 @@ import { ResourceEvents } from '@contracts/resource';
 import { TaskEvents } from '@contracts/task';
 import { TagEvents } from '@contracts/tag';
 import { ServiceEvents } from '@contracts/service';
+import { ShiftEvents } from '@contracts/shift';
 
 export type EventNames =
   | AnimalEvents
@@ -33,4 +34,5 @@ export type EventNames =
   | ResourceEvents
   | TaskEvents
   | TagEvents
-  | ServiceEvents;
+  | ServiceEvents
+  | ShiftEvents;

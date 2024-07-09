@@ -27,6 +27,7 @@ import { ProjectModule } from '@modules/project';
 import { ResourceModule } from '@modules/resource';
 import { SearchModule } from '@modules/search';
 import { ServiceModule } from '@modules/service';
+import { ShiftModule } from '@modules/shift';
 import { TagModule } from '@modules/tag';
 import { TaskModule } from '@modules/task';
 
@@ -52,6 +53,7 @@ const modules: Array<
   ProjectModule,
   ResourceModule,
   ServiceModule,
+  ShiftModule,
   TagModule,
   TaskModule,
   ConditionalModule.registerWhen(
