@@ -26,6 +26,7 @@ Petsee is an open-source REST API framework designed for pettech projects, offer
 - **Document Management**:
   - Document template creation
   - Document creation based on templates
+- **Location System**: Track locations eg. factility address, pet tracking
 
 ### Data Management
 
@@ -94,6 +95,7 @@ Petsee supports the addition of custom fields to extend information for various 
 - Document Template Field
 - Document Template Field Option
 - Document
+- Location
 
 ### Custom Field Capabilities:
 
@@ -113,6 +115,7 @@ Petsee supports the addition of custom fields to extend information for various 
 - Flag document template fields that are printable
 - Image for document template field option
 - Title of a created document
+- Name of a location
 
 Custom fields provide the flexibility to tailor the Petsee platform to specific business needs without modifying the core data structure.
 

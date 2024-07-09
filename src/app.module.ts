@@ -18,6 +18,7 @@ import { DictionaryModule } from '@modules/dictionary';
 import { DocumentModule } from '@modules/document';
 import { FileModule } from '@modules/file';
 import { InventoryModule } from '@modules/inventory';
+import { LocationModule } from '@modules/location';
 import { HealthModule } from '@modules/health';
 import { NoteModule } from '@modules/note';
 import { NotificationCenterModule } from '@modules/notification-center';
@@ -43,6 +44,7 @@ const modules: Array<
   DocumentModule,
   FileModule,
   InventoryModule,
+  LocationModule,
   HealthModule,
   NoteModule,
   NotificationCenterModule,

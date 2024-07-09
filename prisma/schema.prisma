@@ -306,6 +306,7 @@ model Project {
   documentTemplateFieldOptions DocumentTemplateFieldOption[]
   documents                    Document[]
   documentFieldData            DocumentFieldData[]
+  locations                    Location[]
 
   @@map("projects")
 }
@@ -462,6 +463,7 @@ enum CustomFieldModel {
   DOCUMENT_TEMPLATE_FIELD
   DOCUMENT_TEMPLATE_FIELD_OPTION
   DOCUMENT
+  LOCATION
 }
 
 model CustomField {
@@ -1225,10 +1227,10 @@ model DocumentTemplate {
   deletedBy   Json?
   metadata    Json?
 
-  project   Project                 @relation(fields: [projectId], references: [id])
-  fields    DocumentTemplateField[]
-  fieldOptions    DocumentTemplateFieldOption[]
-  documents Document[]
+  project      Project                       @relation(fields: [projectId], references: [id])
+  fields       DocumentTemplateField[]
+  fieldOptions DocumentTemplateFieldOption[]
+  documents    Document[]
 
   @@map("document_templates")
 }
@@ -1281,24 +1283,24 @@ enum DocumentTemplateFieldOptionStatus {
 }
 
 model DocumentTemplateFieldOption {
-  id                      String                      @id @default(uuid()) @db.Uuid
-  projectId               String                      @db.Uuid
-  documentTemplateId String                      @db.Uuid
-  documentTemplateFieldId String                      @db.Uuid
+  id                      String                            @id @default(uuid()) @db.Uuid
+  projectId               String                            @db.Uuid
+  documentTemplateId      String                            @db.Uuid
+  documentTemplateFieldId String                            @db.Uuid
   label                   String
   value                   String
   status                  DocumentTemplateFieldOptionStatus @default(ACTIVE)
-  createdAt               DateTime                    @default(now())
+  createdAt               DateTime                          @default(now())
   createdBy               Json
-  updatedAt               DateTime                    @updatedAt
+  updatedAt               DateTime                          @updatedAt
   updatedBy               Json
   deletedAt               DateTime?
   deletedBy               Json?
   metadata                Json?
 
-  project Project               @relation(fields: [projectId], references: [id])
-  field   DocumentTemplateField @relation(fields: [documentTemplateFieldId], references: [id])
-  template   DocumentTemplate @relation(fields: [documentTemplateId], references: [id])
+  project  Project               @relation(fields: [projectId], references: [id])
+  field    DocumentTemplateField @relation(fields: [documentTemplateFieldId], references: [id])
+  template DocumentTemplate      @relation(fields: [documentTemplateId], references: [id])
 
   @@map("document_template_field_options")
 }
@@ -1341,6 +1343,36 @@ model DocumentFieldData {
   documentTemplateField DocumentTemplateField @relation(fields: [documentTemplateFieldId], references: [id])
 
   @@map("document_field_data")
+}
+
+// ********
+// Location
+// ********
+model Location {
+  id          String    @id @default(uuid()) @db.Uuid
+  projectId   String    @db.Uuid
+  latitude    Float?
+  longitude   Float?
+  altitude    Float?
+  accuracy    Float?
+  street      String?
+  houseNumber String?
+  apartment   String?
+  city        String?
+  state       String?
+  country     String?
+  postalCode  String?
+  createdAt   DateTime  @default(now())
+  createdBy   Json
+  updatedAt   DateTime  @updatedAt
+  updatedBy   Json
+  deletedAt   DateTime?
+  deletedBy   Json?
+  metadata    Json?
+
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@map("locations")
 }
 
 // ********
