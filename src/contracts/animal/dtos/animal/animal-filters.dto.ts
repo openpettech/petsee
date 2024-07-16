@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsOptional, IsUUID } from 'class-validator';
 
-export class AnimalsFilterDto {
+export class AnimalFiltersDto {
   @Expose()
   @IsUUID('4')
   @ApiProperty()

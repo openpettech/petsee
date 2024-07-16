@@ -93,7 +93,6 @@ export class AnimalService {
 
   async findAll(
     context: Context,
-    projectId: string,
     pageOptionsDto: PageOptionsDto,
     filters: Prisma.AnimalWhereInput = {},
   ): Promise<PageDto<AnimalDto>> {
@@ -106,14 +105,12 @@ export class AnimalService {
         },
         where: {
           ...filters,
-          projectId,
           deletedAt: null,
         },
       }),
       this.prisma.animal.count({
         where: {
           ...filters,
-          projectId,
           deletedAt: null,
         },
       }),

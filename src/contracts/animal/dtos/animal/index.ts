@@ -1,4 +1,4 @@
-export * from './animal-filter.dto';
+export * from './animal-filters.dto';
 export * from './animal.dto';
 export * from './create-animal.dto';
 export * from './delete-animal.dto';

@@ -23,7 +23,7 @@ import { AuthGuard } from '@nestjs/passport';
 
 import {
   AnimalDto,
-  AnimalsFilterDto,
+  AnimalFiltersDto,
   CreateAnimalRequest,
   UpdateAnimalRequest,
 } from '@contracts/animal';
@@ -55,14 +55,12 @@ export class AnimalController {
   async list(
     @Ctx() context: Context,
     @Query() pageOptionsDto: PageOptionsDto,
-    @Query() filters: AnimalsFilterDto,
+    @Query() filters: AnimalFiltersDto,
   ) {
-    return this.animalService.findAll(
-      context,
-      context.projectId,
-      pageOptionsDto,
-      filters,
-    );
+    return this.animalService.findAll(context, pageOptionsDto, {
+      ...filters,
+      projectId: context.projectId,
+    });
   }
 
   @Get('/:id')

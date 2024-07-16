@@ -1,3 +1,4 @@
+export * from './animal-relationship-filters.dto';
 export * from './animal-relationship.dto';
 export * from './create-animal-relationship.dto';
 export * from './delete-animal-relationship.dto';

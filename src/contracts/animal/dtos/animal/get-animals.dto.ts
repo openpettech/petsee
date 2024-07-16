@@ -1,7 +1,7 @@
 import { Expose, Type } from 'class-transformer';
 import { IsNotEmpty, IsObject, IsOptional, IsUUID } from 'class-validator';
 
-import { AnimalsFilterDto } from './animal-filter.dto';
+import { AnimalsFilterDto } from './animal-filters.dto';
 
 export class GetAnimalsDto {
   @Expose()
