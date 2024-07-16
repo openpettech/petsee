@@ -12,6 +12,7 @@ import {
   HttpStatus,
   UseGuards,
   Logger,
+  NotImplementedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
@@ -25,6 +26,7 @@ import {
   CustomerDto,
   CreateCustomerRequest,
   UpdateCustomerRequest,
+  CustomerEntities,
 } from '@contracts/customer';
 import {
   PageOptionsDto,
@@ -35,6 +37,8 @@ import {
 import { Ctx, TriggeredBy } from '@shared/decorators';
 
 import { CustomerService } from '../services';
+import { SearchService } from '@modules/core';
+import { SearchRequestDto } from '@contracts/core';
 
 @ApiTags('Customer')
 @Controller('customers')
@@ -42,7 +46,10 @@ import { CustomerService } from '../services';
 export class CustomerController {
   private readonly logger = new Logger(CustomerController.name);
 
-  constructor(private readonly customerService: CustomerService) {}
+  constructor(
+    private readonly customerService: CustomerService,
+    private readonly searchService: SearchService,
+  ) {}
 
   @Get('/')
   @HttpCode(HttpStatus.OK)
@@ -50,6 +57,24 @@ export class CustomerController {
   async list(@Ctx() context: Context, @Query() pageOptionsDto: PageOptionsDto) {
     return this.customerService.findAll(context, pageOptionsDto, {
       projectId: context.projectId,
+    });
+  }
+
+  @Get('/search')
+  @HttpCode(HttpStatus.OK)
+  @ApiPaginatedResponse(CustomerDto)
+  async search(
+    @Ctx() context: Context,
+    @Query() searchRequestDto: SearchRequestDto,
+  ) {
+    if (!this.searchService) {
+      return new NotImplementedException('Search module not set up');
+    }
+
+    return this.searchService.search({
+      indexName: CustomerEntities.CUSTOMER,
+      projectId: context.projectId,
+      ...searchRequestDto,
     });
   }
 

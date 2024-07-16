@@ -12,6 +12,7 @@ import {
   HttpStatus,
   Logger,
   UseGuards,
+  NotImplementedException,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -22,6 +23,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 
 import {
+  AnimalEntities,
   AnimalRelationshipDto,
   AnimalRelationshipFiltersDto,
   CreateAnimalRelationshipRequest,
@@ -33,7 +35,9 @@ import {
   Context,
   ServiceRole,
 } from '@contracts/common';
+import { SearchRequestDto } from '@contracts/core';
 import { Ctx, TriggeredBy } from '@shared/decorators';
+import { SearchService } from '@modules/core';
 
 import { AnimalRelationshipService } from '../services';
 
@@ -45,6 +49,7 @@ export class AnimalRelationshipController {
 
   constructor(
     private readonly animalRelationshipService: AnimalRelationshipService,
+    private readonly searchService: SearchService,
   ) {}
 
   @Get('/')
@@ -58,6 +63,23 @@ export class AnimalRelationshipController {
     return this.animalRelationshipService.findAll(context, pageOptionsDto, {
       ...filters,
       projectId: context.projectId,
+    });
+  }
+
+  @Get('/search')
+  @HttpCode(HttpStatus.OK)
+  @ApiPaginatedResponse(AnimalRelationshipDto)
+  async search(
+    @Ctx() context: Context,
+    @Query() searchRequestDto: SearchRequestDto,
+  ) {
+    if (!this.searchService) {
+      return new NotImplementedException('Search module not set up');
+    }
+    return this.searchService.search({
+      indexName: AnimalEntities.ANIMAL_RELATIONSHIP,
+      projectId: context.projectId,
+      ...searchRequestDto,
     });
   }
 

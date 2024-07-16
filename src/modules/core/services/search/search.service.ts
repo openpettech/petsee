@@ -4,6 +4,8 @@ import {
   DeleteSearchEntryDto,
   GetSearchEntryDto,
   GetSearchEntriesDto,
+  SearchEntriesDto,
+  SearchResultsDto,
 } from '@contracts/core';
 
 export abstract class SearchService<T = any> {
@@ -12,4 +14,5 @@ export abstract class SearchService<T = any> {
   abstract deleteEntry(params: DeleteSearchEntryDto): Promise<void>;
   abstract getEntry(params: GetSearchEntryDto): Promise<T | null>;
   abstract getEntries(params: GetSearchEntriesDto): Promise<T[]>;
+  abstract search(params: SearchEntriesDto): Promise<SearchResultsDto<T>>;
 }

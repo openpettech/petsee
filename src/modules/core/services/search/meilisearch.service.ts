@@ -8,6 +8,9 @@ import {
   DeleteSearchEntryDto,
   GetSearchEntryDto,
   GetSearchEntriesDto,
+  SearchEntriesDto,
+  SearchResultsDto,
+  SearchMetaDto,
 } from '@contracts/core';
 
 import { SearchService } from './search.service';
@@ -30,7 +33,7 @@ export class MeilisearchService<T = any> extends SearchService {
     return indexName.replace('.', '_').toLowerCase();
   }
 
-  private async before(indexName: string) {
+  private async before(indexName: string, entry?: T) {
     const index = this.getIndexName(indexName);
 
     try {
@@ -42,7 +45,15 @@ export class MeilisearchService<T = any> extends SearchService {
 
       // Meilisearch bug on creating index
       const defaultDocumentId = 'INITIAL';
-      await this.client.index(index).addDocuments([
+      const clientIndex = this.client.index(index);
+
+      if (entry) {
+        clientIndex.updateSettings({
+          filterableAttributes: Object.keys(entry),
+          sortableAttributes: Object.keys(entry),
+        });
+      }
+      await clientIndex.addDocuments([
         {
           id: defaultDocumentId,
         },
@@ -53,7 +64,7 @@ export class MeilisearchService<T = any> extends SearchService {
 
   async createEntry({ indexName, data }: CreateSearchEntryDto) {
     try {
-      await this.before(indexName);
+      await this.before(indexName, data);
       await this.client
         .index(this.getIndexName(indexName))
         .addDocuments([data]);
@@ -67,7 +78,7 @@ export class MeilisearchService<T = any> extends SearchService {
 
   async updateEntry({ indexName, id, data }: UpdateSearchEntryDto) {
     try {
-      await this.before(indexName);
+      await this.before(indexName, { id, ...data });
       await this.client.index(this.getIndexName(indexName)).updateDocuments([
         {
           id,
@@ -119,5 +130,75 @@ export class MeilisearchService<T = any> extends SearchService {
         `Error while fetchng ${indexName} entries: ${err.name}`,
       );
     }
+  }
+
+  async search({
+    indexName,
+    projectId,
+    query,
+    limit = 10,
+    offset = 0,
+  }: SearchEntriesDto): Promise<SearchResultsDto<T>> {
+    try {
+      const index = this.getIndexName(indexName);
+      const searchIndex = this.client.index(index);
+      const parsedQuery = this.parseQuery(query, projectId);
+
+      const searchResults = await searchIndex.search<T>(parsedQuery.q, {
+        filter: parsedQuery.filter,
+        limit,
+        offset,
+      });
+
+      const items = searchResults.hits as T[];
+
+      const meta = new SearchMetaDto({
+        limit,
+        page: searchResults.page ?? 1,
+        total: searchResults.totalHits ?? 0,
+        pageCount: searchResults.totalPages ?? 1,
+      });
+
+      return new SearchResultsDto<T>(items, meta);
+    } catch (err) {
+      console.log(err);
+      this.logger.error(
+        `Error while fetching ${indexName} entries: ${err.name}`,
+      );
+    }
+  }
+
+  parseQuery(query: string, projectId: string) {
+    const operators = ['>=', '<=', '>', '<', '='];
+    const logicalOperators = ['AND', 'OR'];
+    const filters: string[] = [`projectId = "${projectId}"`];
+    const queryTerms: string[] = [];
+
+    // Tokenize the query by spaces while considering quotes
+    const tokens = query.match(/(?:[^\s"]+|"[^"]*")+/g) || [];
+
+    tokens.forEach((token) => {
+      // Remove quotes from tokens
+      token = token.replace(/"/g, '');
+
+      if (logicalOperators.includes(token)) {
+        filters.push(token);
+      } else if (operators.some((op) => token.includes(op))) {
+        filters.push(token);
+      } else if (token.startsWith('-')) {
+        const [field, value] = token.substring(1).split(':');
+        filters.push(`${field} != "${value}"`);
+      } else if (token.includes(':')) {
+        const [field, value] = token.split(':');
+        filters.push(`${field} = "${value}"`);
+      } else {
+        queryTerms.push(token);
+      }
+    });
+
+    return {
+      q: queryTerms.join(' AND '),
+      filter: filters.join(' AND '),
+    };
   }
 }

@@ -12,6 +12,7 @@ import {
   HttpStatus,
   Logger,
   UseGuards,
+  NotImplementedException,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -20,9 +21,11 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { AnimalOwnershipType } from '@prisma/client';
 
 import {
   AnimalDto,
+  AnimalEntities,
   AnimalFiltersDto,
   CreateAnimalRequest,
   UpdateAnimalRequest,
@@ -33,10 +36,11 @@ import {
   Context,
   ServiceRole,
 } from '@contracts/common';
+import { SearchRequestDto } from '@contracts/core';
 import { Ctx, TriggeredBy } from '@shared/decorators';
+import { SearchService } from '@modules/core';
 
 import { AnimalService, AnimalRelationshipService } from '../services';
-import { AnimalOwnershipType } from '@prisma/client';
 
 @ApiTags('Animal')
 @Controller('animals')
@@ -47,6 +51,7 @@ export class AnimalController {
   constructor(
     private readonly animalService: AnimalService,
     private readonly animalRelationshipService: AnimalRelationshipService,
+    private readonly searchService: SearchService,
   ) {}
 
   @Get('/')
@@ -60,6 +65,24 @@ export class AnimalController {
     return this.animalService.findAll(context, pageOptionsDto, {
       ...filters,
       projectId: context.projectId,
+    });
+  }
+
+  @Get('/search')
+  @HttpCode(HttpStatus.OK)
+  @ApiPaginatedResponse(AnimalDto)
+  async search(
+    @Ctx() context: Context,
+    @Query() searchRequestDto: SearchRequestDto,
+  ) {
+    if (!this.searchService) {
+      return new NotImplementedException('Search module not set up');
+    }
+
+    return this.searchService.search({
+      indexName: AnimalEntities.ANIMAL,
+      projectId: context.projectId,
+      ...searchRequestDto,
     });
   }
 
